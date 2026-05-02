@@ -14,7 +14,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #050810; color: #cbd5e1; } 
         
-        /* Sleek custom scrollbars */
         .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
@@ -34,7 +33,6 @@
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
-        /* Pulsing green light effect */
         .status-pulse {
             animation: pulse-green 2s infinite;
         }
@@ -45,13 +43,13 @@
         }
     </style>
 </head>
-<body class="h-screen overflow-hidden p-2 md:p-3 flex flex-col gap-3 relative">
+<body class="h-screen overflow-hidden p-2 md:p-3 flex flex-col gap-3 relative text-left">
 
     <!-- Loading Overlay -->
     <div id="loading-screen" class="fixed inset-0 bg-[#050810] z-[100] flex flex-col items-center justify-center p-4 transition-opacity duration-500">
         <div class="flex flex-col items-center gap-4">
             <div class="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2 text-left">
                 <i class="ph-fill ph-lightning text-yellow-500"></i> Daily OS
             </h2>
         </div>
@@ -60,7 +58,7 @@
     <!-- Header Area -->
     <header class="glass-panel p-3 px-4 rounded-2xl flex justify-between items-center shrink-0">
         <div class="flex items-center gap-3">
-            <div>
+            <div class="text-left">
                 <h1 class="text-lg font-bold text-white flex items-center gap-2">
                     <i class="ph-fill ph-lightning text-yellow-500"></i> Daily OS
                     <div id="db-status-light" class="w-2 h-2 rounded-full bg-slate-700 ml-1 transition-all duration-500" title="Checking Connection..."></div>
@@ -69,7 +67,7 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <div id="profit-indicator" class="px-3 py-1.5 rounded-full font-medium text-xs flex items-center gap-2 hidden md:flex"></div>
+            <div id="profit-indicator" class="px-3 py-1.5 rounded-full font-medium text-xs flex items-center gap-2 hidden md:flex text-left"></div>
             <button onclick="togglePrivacy()" class="text-slate-400 hover:text-white transition p-2 rounded-lg bg-white/5 border border-white/5" title="Toggle Privacy">
                 <i id="privacy-icon" class="ph ph-eye text-lg"></i>
             </button>
@@ -81,31 +79,30 @@
 
     <!-- Horizontal Calendar Strip -->
     <div class="glass-panel p-1.5 rounded-2xl flex items-center gap-2 shrink-0">
-        <button id="strip-prev" class="p-2 rounded-xl hover:bg-white/5 text-slate-400 transition"><i class="ph ph-caret-left font-bold"></i></button>
+        <button id="strip-prev" class="p-2 rounded-xl hover:bg-white/5 text-slate-400 transition text-left"><i class="ph ph-caret-left font-bold"></i></button>
         <div id="date-strip" class="flex-1 overflow-x-auto flex gap-1 custom-scroll pb-1 items-center scroll-smooth px-1"></div>
-        <button id="strip-next" class="p-2 rounded-xl hover:bg-white/5 text-slate-400 transition"><i class="ph ph-caret-right font-bold"></i></button>
+        <button id="strip-next" class="p-2 rounded-xl hover:bg-white/5 text-slate-400 transition text-left"><i class="ph ph-caret-right font-bold"></i></button>
     </div>
 
     <!-- MAIN COCKPIT GRID -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1 min-h-0">
         
-        <!-- LEFT COLUMN -->
+        <!-- LEFT COLUMN: Habits -->
         <div class="col-span-3 flex flex-col gap-3 h-full overflow-y-auto custom-scroll pr-1 pb-2">
-            
-            <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0">
+            <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0 text-left">
                 <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
                     <i class="ph-fill ph-leaf text-emerald-500"></i> Habits
                 </h2>
                 <form id="habit-form" class="flex gap-2 mb-3">
                     <input type="text" id="habit-input" placeholder="New habit..." class="min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500" required>
-                    <button type="submit" id="habit-submit-btn" class="shrink-0 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-xs font-medium transition">Add</button>
-                    <button type="button" id="habit-cancel-btn" onclick="cancelEdit('habit')" class="hidden shrink-0 text-slate-500 hover:text-white px-1"><i class="ph ph-x-circle text-lg"></i></button>
+                    <button type="submit" id="habit-submit-btn" class="shrink-0 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-xs font-medium transition">Add</button>
+                    <button type="button" id="habit-cancel-btn" onclick="cancelEdit('habit')" class="hidden shrink-0 text-slate-500 hover:text-white px-1 text-left"><i class="ph ph-x-circle text-lg"></i></button>
                 </form>
                 <div id="habit-list" class="space-y-2"></div>
             </div>
 
-            <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0">
-                <div class="flex justify-between items-center mb-2">
+            <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0 text-left">
+                <div class="flex justify-between items-center mb-2 text-left">
                     <h2 class="text-sm font-bold text-white flex items-center gap-2">
                         <i class="ph-fill ph-chart-line-up text-blue-500"></i> Progress
                     </h2>
@@ -114,38 +111,38 @@
                         <option value="30">30 Days</option>
                     </select>
                 </div>
-                <div class="w-full h-[180px] relative mt-2">
+                <div class="w-full h-[180px] relative mt-2 text-left">
                     <canvas id="habit-chart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- CENTER COLUMN -->
+        <!-- CENTER COLUMN: Execution & Diary -->
         <div class="col-span-5 flex flex-col gap-3 h-full overflow-y-auto custom-scroll pr-1 pb-2">
-            <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0 relative">
+            <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0 relative text-left">
                 
                 <div class="flex gap-1 mb-4 bg-black/40 p-1 rounded-xl shrink-0 border border-white/5">
-                    <button id="tab-execution" onclick="switchCenterView('execution')" class="flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 shadow-sm transition">
+                    <button id="tab-execution" onclick="switchCenterView('execution')" class="flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 shadow-sm transition text-left">
                         <i class="ph-fill ph-check-square-offset text-lg"></i> Tasks
                     </button>
-                    <button id="tab-diary" onclick="switchCenterView('diary')" class="flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition">
+                    <button id="tab-diary" onclick="switchCenterView('diary')" class="flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition text-left">
                         <i class="ph-fill ph-book-open-text text-lg"></i> Diary
                     </button>
                 </div>
 
-                <div id="view-execution" class="flex flex-col">
+                <div id="view-execution" class="flex flex-col text-left">
                     <form id="task-form" class="flex gap-2 mb-4">
                         <input type="text" id="task-input" placeholder="What needs to be done?" class="min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" required>
                         <input type="number" id="task-income-input" placeholder="Linked ₹" class="w-20 shrink-0 bg-black/40 border border-white/10 rounded-lg px-2 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
                         <button type="submit" id="task-submit-btn" class="shrink-0 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50">Add</button>
-                        <button type="button" id="task-cancel-btn" onclick="cancelEdit('task')" class="hidden shrink-0 text-slate-500 hover:text-white px-2"><i class="ph ph-x-circle text-lg"></i></button>
+                        <button type="button" id="task-cancel-btn" onclick="cancelEdit('task')" class="hidden shrink-0 text-slate-500 hover:text-white px-2 text-left"><i class="ph ph-x-circle text-lg"></i></button>
                     </form>
                     <div id="task-list" class="space-y-2"></div>
                 </div>
 
-                <div id="view-diary" class="hidden flex-col">
+                <div id="view-diary" class="hidden flex-col text-left text-left">
                     <div class="flex justify-end mb-3">
-                        <button id="export-diary-btn" class="text-[10px] bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/20 px-2 py-1 rounded-md font-medium transition flex items-center gap-1">
+                        <button id="export-diary-btn" class="text-[10px] bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/20 px-2 py-1 rounded-md font-medium transition flex items-center gap-1 text-left">
                             <i class="ph ph-file-pdf"></i> PDF Report
                         </button>
                     </div>
@@ -157,71 +154,74 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN -->
+        <!-- RIGHT COLUMN: Stats & Money Tracker -->
         <div class="col-span-4 flex flex-col gap-3 h-full overflow-y-auto custom-scroll pr-1 pb-2">
             <div class="grid grid-cols-2 gap-2 shrink-0">
-                <div class="glass-panel p-3 rounded-2xl flex flex-col justify-center">
+                <div class="glass-panel p-3 rounded-2xl flex flex-col justify-center text-left">
                     <h2 class="text-slate-400 text-xs font-medium mb-1.5 flex items-center gap-1.5">
                         <i class="ph-fill ph-wallet text-emerald-400"></i> Today's Net
                     </h2>
                     <div class="text-xl font-bold text-white" id="net-balance">₹0</div>
                 </div>
-                <div class="glass-panel p-3 rounded-2xl flex flex-col justify-center">
-                    <h2 class="text-slate-400 text-xs font-medium mb-1.5 flex items-center gap-1.5">
+                <div class="glass-panel p-3 rounded-2xl flex flex-col justify-center text-left">
+                    <h2 class="text-slate-400 text-xs font-medium mb-1.5 flex items-center gap-1.5 text-left">
                         <i class="ph-fill ph-arrows-down-up text-blue-400"></i> Flow
                     </h2>
-                    <div class="flex justify-between items-center text-[11px] mb-1">
-                        <span class="text-slate-500">Earned</span>
+                    <div class="flex justify-between items-center text-[11px] mb-1 text-left">
+                        <span class="text-slate-500 text-left">Earned</span>
                         <span class="font-semibold text-emerald-400" id="total-income">₹0</span>
                     </div>
-                    <div class="flex justify-between items-center text-[11px]">
-                        <span class="text-slate-500">Spent</span>
+                    <div class="flex justify-between items-center text-[11px] text-left">
+                        <span class="text-slate-500 text-left text-left">Spent</span>
                         <span class="font-semibold text-rose-400" id="total-expense">₹0</span>
                     </div>
                 </div>
-                <div class="glass-panel p-3 rounded-2xl col-span-2 shrink-0">
-                    <div class="flex justify-between items-center mb-1">
-                        <h2 class="text-slate-400 text-xs font-medium flex items-center gap-1.5">
+                <div class="glass-panel p-3 rounded-2xl col-span-2 shrink-0 text-left">
+                    <div class="flex justify-between items-center mb-1 text-left text-left">
+                        <h2 class="text-slate-400 text-xs font-medium flex items-center gap-1.5 text-left text-left">
                             <i class="ph-fill ph-target text-indigo-400"></i> Daily Goal
                         </h2>
-                        <div class="flex items-center gap-1">
-                            <span id="goal-target-display" class="text-[10px] font-semibold bg-white/5 px-2 py-0.5 rounded text-slate-300 border border-white/10">Target: ₹2000</span>
-                            <button onclick="editGoal()" class="text-slate-500 hover:text-indigo-400 transition p-1 rounded-md hover:bg-white/5"><i class="ph ph-pencil-simple"></i></button>
+                        <div class="flex items-center gap-1 text-left text-left text-left">
+                            <span id="goal-target-display" class="text-[10px] font-semibold bg-white/5 px-2 py-0.5 rounded text-slate-300 border border-white/10 text-left text-left">Target: ₹2000</span>
+                            <button onclick="editGoal()" class="text-slate-500 hover:text-indigo-400 transition p-1 rounded-md hover:bg-white/5 text-left text-left text-left"><i class="ph ph-pencil-simple"></i></button>
                         </div>
                     </div>
-                    <div class="flex items-end gap-2 mb-1.5 mt-0.5">
-                        <div class="text-2xl font-bold text-white leading-none" id="goal-percentage">0%</div>
-                        <p class="text-[10px] text-slate-500 mb-0.5" id="goal-deficit">Short: ₹0</p>
+                    <div class="flex items-end gap-2 mb-1.5 mt-0.5 text-left text-left text-left">
+                        <div class="text-2xl font-bold text-white leading-none text-left text-left text-left" id="goal-percentage">0%</div>
+                        <p class="text-[10px] text-slate-500 mb-0.5 text-left text-left" id="goal-deficit">Short: ₹0</p>
                     </div>
-                    <div class="w-full bg-black/40 rounded-full h-1.5 overflow-hidden">
-                        <div id="goal-bar" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style="width: 0%"></div>
+                    <div class="w-full bg-black/40 rounded-full h-1.5 overflow-hidden text-left text-left text-left text-left">
+                        <div id="goal-bar" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)] text-left"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-panel p-3 rounded-2xl flex flex-col shrink-0">
-                <h2 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+            <div class="glass-panel p-3 rounded-2xl flex flex-col shrink-0 text-left text-left text-left">
+                <h2 class="text-sm font-bold text-white mb-2 flex items-center gap-2 text-left">
                     <i class="ph-fill ph-currency-inr text-emerald-500"></i> Money Tracker
                 </h2>
 
-                <form id="transaction-form" class="flex flex-col gap-2 mb-3 bg-black/20 p-2.5 rounded-xl border border-white/5">
-                    <div class="flex gap-2">
-                        <button type="button" id="btn-type-income" class="flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition">Income</button>
-                        <button type="button" id="btn-type-expense" class="flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition">Expense</button>
+                <form id="transaction-form" class="flex flex-col gap-2 mb-3 bg-black/20 p-2.5 rounded-xl border border-white/5 text-left text-left text-left text-left">
+                    <div class="flex gap-2 text-left">
+                        <button type="button" id="btn-type-income" class="flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition text-left">Income</button>
+                        <button type="button" id="btn-type-expense" class="flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition text-left">Expense</button>
                     </div>
-                    <div id="category-panel" class="flex flex-wrap gap-1.5 py-0.5"></div>
-                    <div class="flex gap-2">
-                        <input type="text" id="trans-source" placeholder="Note / Details" class="min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500" required>
-                        <input type="number" id="trans-amount" placeholder="₹ Amt" class="w-20 shrink-0 bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500" required>
+                    
+                    <div id="category-panel" class="flex flex-wrap gap-1.5 py-0.5 text-left"></div>
+                    
+                    <div class="flex gap-2 text-left text-left">
+                        <input type="text" id="trans-source" placeholder="Note / Details" class="min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500 text-left" required>
+                        <input type="number" id="trans-amount" placeholder="₹ Amt" class="w-20 shrink-0 bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500 text-left" required>
                     </div>
-                    <div class="flex gap-2">
-                        <button type="submit" id="trans-submit-btn" class="flex-1 bg-white/10 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-white/20 border border-white/10 transition">Log Transaction</button>
-                        <button type="button" id="trans-cancel-btn" onclick="cancelEdit('transaction')" class="hidden bg-white/5 text-slate-400 py-1.5 px-3 rounded-lg text-xs font-medium hover:bg-white/10 border border-white/5 transition">Cancel</button>
+                    
+                    <div class="flex gap-2 text-left text-left text-left">
+                        <button type="submit" id="trans-submit-btn" class="flex-1 bg-white/10 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-white/20 border border-white/10 transition text-left">Log Transaction</button>
+                        <button type="button" id="trans-cancel-btn" onclick="cancelEdit('transaction')" class="hidden bg-white/5 text-slate-400 py-1.5 px-3 rounded-lg text-xs font-medium hover:bg-white/10 border border-white/5 transition text-left">Cancel</button>
                     </div>
                 </form>
 
-                <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 shrink-0">Ledger</h3>
-                <div id="transaction-list" class="space-y-1.5"></div>
+                <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 shrink-0 text-left text-left text-left text-left">Ledger</h3>
+                <div id="transaction-list" class="space-y-1.5 text-left text-left text-left text-left text-left"></div>
             </div>
         </div>
     </div>
@@ -229,80 +229,83 @@
     <!-- Modals -->
     <div id="goal-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="glass-panel rounded-2xl shadow-2xl w-full max-w-sm flex flex-col modal-enter">
-            <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center shrink-0 bg-black/20">
+            <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center shrink-0 bg-black/20 text-left text-left text-left text-left">
                 <h2 class="text-sm font-bold text-white flex items-center gap-2"><i class="ph-fill ph-target text-indigo-500"></i> Set Daily Goal</h2>
-                <button onclick="closeGoalModal()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10"><i class="ph ph-x"></i></button>
+                <button onclick="closeGoalModal()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-left"><i class="ph ph-x"></i></button>
             </div>
-            <div class="p-6 flex flex-col gap-4">
-                <input type="number" id="goal-modal-input" placeholder="Target amount (₹)" class="bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-lg font-semibold text-white focus:outline-none focus:border-indigo-500 w-full" required>
-                <button onclick="saveGoal()" class="w-full bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50">Save Goal</button>
+            <div class="p-6 flex flex-col gap-4 text-left text-left text-left text-left">
+                <input type="number" id="goal-modal-input" placeholder="Target amount (₹)" class="bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-lg font-semibold text-white focus:outline-none focus:border-indigo-500 w-full text-left" required>
+                <button onclick="saveGoal()" class="w-full bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50 text-left">Save Goal</button>
             </div>
         </div>
     </div>
 
-    <div id="diary-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="glass-panel rounded-2xl shadow-2xl w-full max-w-2xl h-[70vh] flex flex-col modal-enter">
-            <div class="px-6 py-4 flex justify-between items-center shrink-0 border-b border-white/5">
-                <div class="text-slate-400 text-[11px] font-medium flex items-center gap-2 uppercase tracking-wider">
-                    <i class="ph ph-calendar"></i> <span id="diary-modal-date"></span>
+    <div id="diary-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 text-left">
+        <div class="glass-panel rounded-2xl shadow-2xl w-full max-w-2xl h-[70vh] flex flex-col modal-enter text-left text-left">
+            <div class="px-6 py-4 flex justify-between items-center shrink-0 border-b border-white/5 text-left text-left text-left">
+                <div class="text-slate-400 text-[11px] font-medium flex items-center gap-2 uppercase tracking-wider text-left text-left text-left">
+                    <i class="ph ph-calendar"></i> <span id="diary-modal-date" class="text-left text-left text-left"></span>
                 </div>
-                <button onclick="closeDiaryModal()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10"><i class="ph ph-x"></i></button>
+                <button onclick="closeDiaryModal()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-left text-left"><i class="ph ph-x"></i></button>
             </div>
-            <div class="p-8 flex-1 overflow-y-auto custom-scroll flex flex-col gap-4 text-left">
-                <input type="text" id="diary-modal-title" placeholder="Entry Title" class="bg-transparent text-3xl font-bold text-white focus:outline-none placeholder-slate-600 w-full mb-2">
-                <textarea id="diary-modal-details" placeholder="Write your notes here..." class="bg-transparent text-sm text-slate-300 focus:outline-none placeholder-slate-600 w-full flex-1 resize-none leading-relaxed"></textarea>
+            <div class="p-8 flex-1 overflow-y-auto custom-scroll flex flex-col gap-4 text-left text-left text-left text-left">
+                <input type="text" id="diary-modal-title" placeholder="Entry Title" class="bg-transparent text-3xl font-bold text-white focus:outline-none placeholder-slate-600 w-full mb-2 text-left">
+                <textarea id="diary-modal-details" placeholder="Write your notes here..." class="bg-transparent text-sm text-slate-300 focus:outline-none placeholder-slate-600 w-full flex-1 resize-none leading-relaxed text-left"></textarea>
             </div>
-            <div class="px-6 py-4 border-t border-white/5 flex justify-end shrink-0 bg-black/20">
-                <button onclick="saveDiaryEntry()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50">Save Entry</button>
+            <div class="px-6 py-4 border-t border-white/5 flex justify-end shrink-0 bg-black/20 text-left text-left">
+                <button onclick="saveDiaryEntry()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50 text-left text-left">Save Entry</button>
             </div>
         </div>
     </div>
 
-    <div id="monthly-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="glass-panel rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden modal-enter flex flex-col">
-            <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center shrink-0 bg-black/20 text-left">
-                <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                    <i class="ph-fill ph-chart-pie-slice text-indigo-500"></i> <span id="modal-month-title">Monthly Report</span>
+    <!-- Monthly Report Modal -->
+    <div id="monthly-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 text-left text-left text-left">
+        <div class="glass-panel rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden modal-enter flex flex-col text-left text-left text-left text-left">
+            <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center shrink-0 bg-black/20 text-left text-left text-left">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2 text-left">
+                    <i class="ph-fill ph-chart-pie-slice text-indigo-500 text-left"></i> <span id="modal-month-title" class="text-left text-left text-left text-left">Monthly Report</span>
                 </h2>
-                <button onclick="closeMonthlyReport()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10"><i class="ph ph-x text-lg"></i></button>
+                <button onclick="closeMonthlyReport()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-left text-left text-left"><i class="ph ph-x text-left"></i></button>
             </div>
-            <div class="p-6 overflow-y-auto custom-scroll flex-1">
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-emerald-900/10 p-4 rounded-2xl border border-emerald-500/20 text-center">
-                        <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Earned</p>
-                        <p class="text-2xl font-bold text-emerald-400" id="modal-income">₹0</p>
+            
+            <div class="p-6 overflow-y-auto custom-scroll flex-1 text-left text-left text-left text-left text-left">
+                <div class="grid grid-cols-3 gap-4 mb-6 text-left text-left text-left text-left">
+                    <div class="bg-emerald-900/10 p-4 rounded-2xl border border-emerald-500/20 text-center text-left text-left">
+                        <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1 text-left text-left">Total Earned</p>
+                        <p class="text-2xl font-bold text-emerald-400 text-left text-left" id="modal-income">₹0</p>
                     </div>
-                    <div class="bg-rose-900/10 p-4 rounded-2xl border border-rose-500/20 text-center">
-                        <p class="text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1">Total Spent</p>
-                        <p class="text-2xl font-bold text-rose-400" id="modal-expense">₹0</p>
+                    <div class="bg-rose-900/10 p-4 rounded-2xl border border-rose-500/20 text-center text-left text-left">
+                        <p class="text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1 text-left text-left">Total Spent</p>
+                        <p class="text-2xl font-bold text-rose-400 text-left text-left" id="modal-expense">₹0</p>
                     </div>
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center shadow-sm">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Net Profit</p>
-                        <p class="text-2xl font-bold text-white" id="modal-net">₹0</p>
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center shadow-sm text-left text-left">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 text-left text-left">Net Profit</p>
+                        <p class="text-2xl font-bold text-white text-left text-left" id="modal-net">₹0</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="md:col-span-2 bg-black/20 p-4 rounded-2xl border border-white/5">
-                        <h3 class="text-xs font-bold text-slate-300 mb-3 border-b border-white/10 pb-2 flex items-center gap-2"><i class="ph-fill ph-chart-bar text-indigo-400"></i> Income vs Expense Flow</h3>
-                        <div class="w-full h-56 relative text-left"><canvas id="flow-chart"></canvas></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left text-left text-left text-left text-left">
+                    <div class="md:col-span-2 bg-black/20 p-4 rounded-2xl border border-white/5 text-left text-left">
+                        <h3 class="text-xs font-bold text-slate-300 mb-3 border-b border-white/10 pb-2 flex items-center gap-2 text-left"><i class="ph-fill ph-chart-bar text-indigo-400 text-left text-left"></i> Income vs Expense Flow</h3>
+                        <div class="w-full h-56 relative text-left text-left text-left text-left text-left"><canvas id="flow-chart"></canvas></div>
                     </div>
-                    <div class="bg-black/20 p-4 rounded-2xl border border-white/5 text-left">
-                        <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
-                            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2"><i class="ph-fill ph-trend-up text-emerald-500"></i> Income by Tag</h3>
-                            <select id="sort-income-select" class="text-[10px] border border-white/10 rounded px-1.5 py-1 focus:outline-none text-slate-300 bg-black/40 cursor-pointer">
+                    <div class="bg-black/20 p-4 rounded-2xl border border-white/5 text-left text-left text-left">
+                        <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2 text-left text-left">
+                            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2 text-left text-left"><i class="ph-fill ph-trend-up text-emerald-500 text-left text-left text-left"></i> Income by Tag</h3>
+                            <select id="sort-income-select" class="text-[10px] border border-white/10 rounded px-1.5 py-1 focus:outline-none text-slate-300 bg-black/40 cursor-pointer text-left text-left text-left">
                                 <option value="highest">Highest ₹</option><option value="lowest">Lowest ₹</option><option value="alpha">A - Z</option>
                             </select>
                         </div>
-                        <div id="income-category-list" class="space-y-4 max-h-[250px] overflow-y-auto custom-scroll pr-2"></div>
+                        <div id="income-category-list" class="space-y-4 max-h-[250px] overflow-y-auto custom-scroll pr-2 text-left text-left text-left text-left"></div>
                     </div>
-                    <div class="bg-black/20 p-4 rounded-2xl border border-white/5 text-left">
-                        <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
-                            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2"><i class="ph-fill ph-trend-down text-rose-500"></i> Expense by Tag</h3>
-                            <select id="sort-expense-select" class="text-[10px] border border-white/10 rounded px-1.5 py-1 focus:outline-none text-slate-300 bg-black/40 cursor-pointer">
+                    <div class="bg-black/20 p-4 rounded-2xl border border-white/5 text-left text-left text-left">
+                        <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2 text-left text-left">
+                            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2 text-left text-left"><i class="ph-fill ph-trend-down text-rose-500 text-left text-left text-left"></i> Expense by Tag</h3>
+                            <select id="sort-expense-select" class="text-[10px] border border-white/10 rounded px-1.5 py-1 focus:outline-none text-slate-300 bg-black/40 cursor-pointer text-left text-left">
                                 <option value="highest">Highest ₹</option><option value="lowest">Lowest ₹</option><option value="alpha">A - Z</option>
                             </select>
                         </div>
-                        <div id="expense-category-list" class="space-y-4 max-h-[250px] overflow-y-auto custom-scroll pr-2"></div>
+                        <div id="expense-category-list" class="space-y-4 max-h-[250px] overflow-y-auto custom-scroll pr-2 text-left text-left text-left text-left"></div>
                     </div>
                 </div>
             </div>
@@ -313,7 +316,9 @@
         const SUPABASE_URL = 'https://weiqjcmkkeuqxodkoqpd.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlaXFqY21ra2V1cXhvZGtvcXBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NTMxMzgsImV4cCI6MjA3NzMyOTEzOH0.9hvIDbStGyFStnG0FJl_9w0LSbzcru9tf6drJ_uAKts';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const currentUser = { id: '00000000-0000-0000-0000-000000000001' };
+        
+        // Changed to 'let' to allow assignment if auth was used, though we use fixed ID here for direct access
+        let currentUser = { id: '00000000-0000-0000-0000-000000000001' };
 
         Chart.defaults.color = '#64748b';
         Chart.defaults.font.family = "'Inter', sans-serif";
@@ -386,8 +391,6 @@
             els.privacyIcon = document.getElementById('privacy-icon');
             els.loadingScreen = document.getElementById('loading-screen');
             els.dbStatusLight = document.getElementById('db-status-light');
-            els.sortIncomeSelect = document.getElementById('sort-income-select');
-            els.sortExpenseSelect = document.getElementById('sort-expense-select');
         };
 
         async function init() {
@@ -402,7 +405,7 @@
                     els.dbStatusLight.title = "DB Connected";
                 }
             } catch (err) {
-                console.error("DB Load Error:", err);
+                console.error("Connection failed:", err);
                 if (els.dbStatusLight) {
                     els.dbStatusLight.classList.replace('bg-slate-700', 'bg-rose-500');
                     els.dbStatusLight.title = "Connection Error";
@@ -427,7 +430,9 @@
             state.habits = habitsRes.data || [];
             state.tags = { income: ['Project', 'Freelance', 'Salary', 'Investment', 'Gift', 'Other'], expense: ['Food', 'Transport', 'Software', 'Shopping', 'Bills', 'Personal', 'Other'] };
             (tagsRes.data || []).forEach(t => {
-                if (state.tags[t.tag_type] && !state.tags[t.tag_type].includes(t.name)) state.tags[t.tag_type].push(t.name);
+                if (state.tags[t.tag_type] && !state.tags[t.tag_type].includes(t.name)) {
+                    state.tags[t.tag_type].push(t.name);
+                }
             });
             (tasksRes.data || []).forEach(t => getDayData(t.task_date).tasks.push(t));
             (transRes.data || []).forEach(t => getDayData(t.trans_date).transactions.push(t));
@@ -457,7 +462,8 @@
                 els.tabExecution.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 shadow-sm transition';
                 els.tabDiary.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition';
             } else {
-                els.viewExecution.classList.replace('flex', 'hidden'); els.viewDiary.classList.replace('hidden', 'flex');
+                els.viewExecution.classList.add('hidden'); els.viewExecution.classList.remove('flex');
+                els.viewDiary.classList.remove('hidden'); els.viewDiary.classList.add('flex');
                 els.tabDiary.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-amber-500/20 text-amber-400 border border-amber-500/20 shadow-sm transition';
                 els.tabExecution.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition';
             }
@@ -475,8 +481,7 @@
         async function saveGoal() {
             const newGoal = Number(document.getElementById('goal-modal-input').value);
             if (newGoal > 0) {
-                const { error } = await supabaseClient.from('dailyos_daily_goals').upsert({ user_id: currentUser.id, goal_date: state.currentDate, goal_amount: newGoal }, { onConflict: 'user_id, goal_date' });
-                if(error) { console.error(error); return; }
+                await supabaseClient.from('dailyos_daily_goals').upsert({ user_id: currentUser.id, goal_date: state.currentDate, goal_amount: newGoal }, { onConflict: 'user_id, goal_date' });
                 getDayData().goal = newGoal; renderDashboard(); closeGoalModal();
             }
         }
@@ -540,7 +545,6 @@
                     <div class="flex items-center gap-3 min-w-0 flex-1">
                         <input type="checkbox" ${task.is_completed ? 'checked' : ''} onchange="toggleTask('${task.id}', '${task.originalDate}')" class="w-4 h-4 shrink-0 text-indigo-500 bg-black/50 border-white/20 rounded cursor-pointer">
                         <span class="text-xs font-medium min-w-0 break-words ${task.is_completed ? 'text-slate-600 line-through' : 'text-slate-200'}">${task.text}</span>
-                        ${(task.originalDate < state.currentDate && !task.is_completed) ? `<span class="text-[9px] shrink-0 text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20 ml-2">Carried</span>` : ''}
                     </div>
                     <div class="flex items-center gap-2 pl-2 shrink-0">
                         ${task.linked_income > 0 ? `<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1"><i class="ph-fill ph-coins"></i> ₹${task.linked_income}</span>` : ''}
@@ -590,6 +594,59 @@
                 btn.textContent = tag; btn.onclick = () => { state.activeTag = tag; renderCategoryTags(); };
                 els.categoryPanel.appendChild(btn);
             });
+
+            const addWrapper = document.createElement('div');
+            addWrapper.className = 'flex items-center shrink-0';
+            const addBtn = document.createElement('button');
+            addBtn.type = 'button';
+            addBtn.className = 'px-2.5 py-1 text-[10px] font-medium rounded-full border border-dashed border-slate-600 text-slate-500 hover:bg-white/10 hover:text-slate-400 transition flex items-center gap-1';
+            addBtn.innerHTML = '<i class="ph ph-plus"></i> Add';
+            
+            addBtn.onclick = () => {
+                addWrapper.innerHTML = `
+                    <form id="new-tag-form" class="flex items-center gap-1">
+                        <input type="text" id="new-tag-input" class="w-20 px-2 py-1 text-[10px] font-medium rounded-full border border-indigo-500 focus:outline-none bg-black/50 text-white" placeholder="New Tag" autocomplete="off">
+                        <button type="submit" class="p-1 bg-indigo-500/20 text-indigo-400 rounded-full hover:bg-indigo-500/30 transition"><i class="ph ph-check"></i></button>
+                        <button type="button" id="cancel-tag-btn" class="p-1 bg-white/10 text-slate-400 rounded-full hover:bg-white/20 transition"><i class="ph ph-x"></i></button>
+                    </form>`;
+                
+                // Safe query within wrapper
+                const form = addWrapper.querySelector('#new-tag-form');
+                const input = addWrapper.querySelector('#new-tag-input');
+                const cancelBtn = addWrapper.querySelector('#cancel-tag-btn');
+
+                setTimeout(() => input.focus(), 10);
+                
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    let val = input.value.trim();
+                    if (val) {
+                        if (val.length > 15) val = val.substring(0, 15) + '...';
+                        if (!currentTags.includes(val)) {
+                            state.tags[state.activeTransactionType].push(val);
+                            await supabaseClient.from('dailyos_tags').insert({ user_id: currentUser.id, tag_type: state.activeTransactionType, name: val });
+                        }
+                        state.activeTag = val; 
+                    }
+                    renderCategoryTags();
+                });
+                
+                cancelBtn.addEventListener('click', renderCategoryTags);
+            };
+            addWrapper.appendChild(addBtn); els.categoryPanel.appendChild(addWrapper);
+        }
+
+        function setTransactionType(type) {
+            state.activeTransactionType = type; renderCategoryTags(); 
+            if (type === 'income') {
+                els.btnIncome.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition";
+                els.btnExpense.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition";
+                els.transSource.className = els.transAmount.className = "min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500";
+            } else {
+                els.btnExpense.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-rose-500/20 text-rose-400 border border-rose-500/30 transition";
+                els.btnIncome.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition";
+                els.transSource.className = "min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-rose-500";
+            }
         }
 
         function renderTransactions() {
@@ -631,8 +688,7 @@
             if (!title && !details) { closeDiaryModal(); return; }
             if (editingDiaryId) {
                 await supabaseClient.from('dailyos_diary_entries').update({ title, details }).eq('id', editingDiaryId);
-                const entry = getDayData().diary.find(d => d.id === editingDiaryId); 
-                if (entry) { entry.title = title; entry.details = details; }
+                const entry = getDayData().diary.find(d => d.id === editingDiaryId); if (entry) { entry.title = title; entry.details = details; }
             } else {
                 const { data } = await supabaseClient.from('dailyos_diary_entries').insert({ user_id: currentUser.id, diary_date: state.currentDate, title, details }).select();
                 if(data) getDayData(state.currentDate).diary.push(data[0]);
@@ -644,7 +700,7 @@
             const dayData = getDayData(); els.diaryList.innerHTML = dayData.diary.length === 0 ? `<p class="text-xs text-slate-600 italic py-4 text-center">No entries.</p>` : '';
             dayData.diary.forEach(point => {
                 const li = document.createElement('li');
-                li.className = `group flex flex-col gap-1 text-xs text-slate-300 bg-amber-900/10 p-3 rounded-xl border border-amber-500/20 cursor-pointer hover:bg-amber-900/20 transition-all text-left`;
+                li.className = `group flex flex-col gap-1 text-xs text-slate-300 bg-amber-900/10 p-3 rounded-xl border border-amber-500/20 cursor-pointer hover:bg-amber-900/20 transition-all`;
                 li.onclick = (e) => { if (!e.target.closest('.diary-actions')) openDiaryModal(point.id); };
                 li.innerHTML = `
                     <div class="flex justify-between items-start gap-2">
@@ -670,7 +726,7 @@
                 const div = document.createElement('div');
                 div.className = `group flex items-center justify-between p-2.5 rounded-xl border ${isDone ? 'bg-emerald-900/10 border-emerald-500/20' : 'bg-black/20 border-white/5'} transition-all`;
                 div.innerHTML = `
-                    <div class="flex items-center gap-3 min-w-0 flex-1 text-left">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
                         <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleHabit('${habit.id}')" class="w-4 h-4 shrink-0 text-indigo-500 bg-black/50 border-white/20 rounded cursor-pointer">
                         <span class="text-xs font-medium min-w-0 break-words ${isDone ? 'opacity-70 line-through' : ''}">${state.privacyMode ? '••••••••' : habit.text}</span>
                     </div>
@@ -690,22 +746,16 @@
 
         function setupEventListeners() {
             if (!els.monthYearDisplay) return;
-
             document.getElementById('strip-prev').addEventListener('click', () => { state.viewDate.setMonth(state.viewDate.getMonth() - 1); renderCalendarStrip(); });
             document.getElementById('strip-next').addEventListener('click', () => { state.viewDate.setMonth(state.viewDate.getMonth() + 1); renderCalendarStrip(); });
             document.getElementById('goal-modal-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') saveGoal(); });
-            
             if (els.habitViewSelect) els.habitViewSelect.addEventListener('change', renderHabitChart);
-            if (els.sortIncomeSelect) els.sortIncomeSelect.addEventListener('change', (e) => { state.reportSort.income = e.target.value; });
-            if (els.sortExpenseSelect) els.sortExpenseSelect.addEventListener('change', (e) => { state.reportSort.expense = e.target.value; });
 
             els.habitForm.addEventListener('submit', async (e) => {
                 e.preventDefault(); const text = els.habitInput.value.trim();
                 if(state.editModes.habit) {
                     await supabaseClient.from('dailyos_habits').update({ text }).eq('id', state.editModes.habit);
-                    const h = state.habits.find(h => h.id === state.editModes.habit);
-                    if (h) h.text = text;
-                    cancelEdit('habit');
+                    const h = state.habits.find(h => h.id === state.editModes.habit); if (h) h.text = text; cancelEdit('habit');
                 } else {
                     const { data } = await supabaseClient.from('dailyos_habits').insert({ user_id: currentUser.id, text }).select();
                     if(data) state.habits.push(data[0]); els.habitInput.value = '';
@@ -742,65 +792,7 @@
             });
         }
 
-        function openMonthlyReport() {
-            const year = state.viewDate.getFullYear(); const month = String(state.viewDate.getMonth() + 1).padStart(2, '0');
-            const monthPrefix = `${year}-${month}`;
-            document.getElementById('modal-month-title').textContent = `${new Date(year, state.viewDate.getMonth()).toLocaleString('en-US', { month: 'long' })} ${year}`;
-            let tInc = 0, tExp = 0; let incCats = {}, expCats = {};
-            const daysInMonth = new Date(year, state.viewDate.getMonth() + 1, 0).getDate();
-            const incData = new Array(daysInMonth).fill(0), expData = new Array(daysInMonth).fill(0);
-
-            Object.keys(state.days).forEach(date => {
-                if (date.startsWith(monthPrefix)) {
-                    const dayNum = parseInt(date.split('-')[2]);
-                    state.days[date].transactions.forEach(t => {
-                        const cat = t.category || 'Other';
-                        const amt = Number(t.amount);
-                        if (t.trans_type === 'income') { tInc += amt; incData[dayNum - 1] += amt; incCats[cat] = (incCats[cat] || 0) + amt; }
-                        else { tExp += amt; expData[dayNum - 1] += amt; expCats[cat] = (expCats[cat] || 0) + amt; }
-                    });
-                }
-            });
-
-            document.getElementById('modal-income').textContent = `₹${tInc.toLocaleString()}`;
-            document.getElementById('modal-expense').textContent = `₹${tExp.toLocaleString()}`;
-            document.getElementById('modal-net').textContent = `₹${(tInc - tExp).toLocaleString()}`;
-            document.getElementById('monthly-modal').classList.remove('hidden');
-
-            const ctx = document.getElementById('flow-chart').getContext('2d');
-            if (flowChartInstance) flowChartInstance.destroy();
-            flowChartInstance = new Chart(ctx, { type: 'bar', data: { labels: Array.from({length: daysInMonth}, (_, i) => i + 1), datasets: [{ label: 'Income', data: incData, backgroundColor: '#10b981', borderRadius: 2 }, { label: 'Expense', data: expData, backgroundColor: '#f43f5e', borderRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { boxWidth: 10, color: '#94a3b8' } } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } } });
-
-            const sortList = (elId, cats, total, color) => {
-                const el = document.getElementById(elId); el.innerHTML = '';
-                Object.entries(cats).sort((a, b) => b[1] - a[1]).forEach(([cat, amt]) => {
-                    const p = total > 0 ? ((amt / total) * 100).toFixed(1) : 0;
-                    el.innerHTML += `<div><div class="flex justify-between items-center mb-1"><span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 border border-white/10">${cat}</span><span class="text-xs font-bold">₹${amt.toLocaleString()}</span></div><div class="w-full bg-black/40 rounded-full h-1.5"><div class="h-full rounded-full" style="width: ${p}%; background: ${color}"></div></div></div>`;
-                });
-            };
-            sortList('income-category-list', incCats, tInc, '#10b981');
-            sortList('expense-category-list', expCats, tExp, '#f43f5e');
-        }
-
-        function closeMonthlyReport() { document.getElementById('monthly-modal').classList.add('hidden'); }
-
-        document.getElementById('export-diary-btn').addEventListener('click', function() {
-            const year = state.viewDate.getFullYear(), month = String(state.viewDate.getMonth() + 1).padStart(2, '0');
-            const entries = [];
-            Object.keys(state.days).forEach(date => { if (date.startsWith(`${year}-${month}`) && state.days[date].diary.length) entries.push({ date, points: state.days[date].diary }); });
-            if (!entries.length) { this.innerHTML = `<i class="ph ph-warning-circle"></i> Empty`; setTimeout(() => this.innerHTML = `<i class="ph ph-file-pdf"></i> PDF Report`, 2000); return; }
-            entries.sort((a, b) => a.date.localeCompare(b.date));
-            const container = document.createElement('div');
-            container.style.padding = '30px'; container.style.fontFamily = 'Inter, sans-serif'; container.style.backgroundColor = '#050810'; container.style.color = '#e2e8f0';
-            container.innerHTML = `<h1 style="font-size: 24px; color: #f8fafc; margin-bottom: 8px;">Monthly Report</h1><p style="font-size: 14px; color: #94a3b8; margin-bottom: 30px; border-bottom: 1px solid #1e293b;">Entries for ${year}-${month}</p>`;
-            entries.forEach(e => {
-                const d = new Date(e.date);
-                let points = e.points.map(p => `<li style="margin-bottom: 16px; list-style: none;"><div style="display: flex; gap: 8px;"><span style="color: #f59e0b; font-size: 18px;">•</span><div><strong style="color: #fdf6e3; font-size: 15px;">${p.title}</strong>${p.details ? `<div style="margin-top: 6px; color: #94a3b8; font-size: 13px; white-space: pre-wrap; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px;">${p.details}</div>` : ''}</div></div></li>`).join('');
-                container.innerHTML += `<div style="margin-bottom: 24px; background: rgba(15, 23, 42, 0.7); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);"><h3 style="font-size: 14px; font-weight: bold; color: #fbbf24; margin-bottom: 16px;">${e.date} (${d.toLocaleDateString('en-US',{weekday:'long'})})</h3><ul style="padding: 0; margin: 0;">${points}</ul></div>`;
-            });
-            html2pdf().set({ margin: 0.5, filename: `Monthly_Report_${year}-${month}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(container).save();
-        });
-
+        // Helpers
         function getTasksForDate(target) {
             let list = [];
             Object.keys(state.days).forEach(d => { if(d < target) state.days[d].tasks.forEach(t => { if(!t.is_completed) list.push({...t, originalDate: d}); }); });
