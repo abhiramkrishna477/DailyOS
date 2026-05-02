@@ -41,15 +41,20 @@
             70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
+
+        /* Tactile Button Press Effect */
+        .btn-press:active {
+            transform: scale(0.97);
+        }
     </style>
 </head>
 <body class="h-screen overflow-hidden p-2 md:p-3 flex flex-col gap-3 relative text-left">
 
     <!-- Loading Overlay -->
     <div id="loading-screen" class="fixed inset-0 bg-[#050810] z-[100] flex flex-col items-center justify-center p-4 transition-opacity duration-500">
-        <div class="flex flex-col items-center gap-4">
+        <div class="flex flex-col items-center gap-4 text-center">
             <div class="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-            <h2 class="text-lg font-bold text-white flex items-center gap-2 text-left">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
                 <i class="ph-fill ph-lightning text-yellow-500"></i> Daily OS
             </h2>
         </div>
@@ -68,10 +73,10 @@
         </div>
         <div class="flex items-center gap-3">
             <div id="profit-indicator" class="px-3 py-1.5 rounded-full font-medium text-xs flex items-center gap-2 hidden md:flex text-left"></div>
-            <button onclick="togglePrivacy()" class="text-slate-400 hover:text-white transition p-2 rounded-lg bg-white/5 border border-white/5" title="Toggle Privacy">
+            <button onclick="togglePrivacy()" class="text-slate-400 hover:text-white transition p-2 rounded-lg bg-white/5 border border-white/5 btn-press" title="Toggle Privacy">
                 <i id="privacy-icon" class="ph ph-eye text-lg"></i>
             </button>
-            <button onclick="openMonthlyReport()" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 px-3 py-2 rounded-lg text-xs font-medium transition flex items-center gap-2">
+            <button onclick="openMonthlyReport()" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 px-3 py-2 rounded-lg text-xs font-medium transition flex items-center gap-2 btn-press">
                 <i class="ph ph-chart-pie-slice"></i> Report
             </button>
         </div>
@@ -79,9 +84,9 @@
 
     <!-- Horizontal Calendar Strip -->
     <div class="glass-panel p-1.5 rounded-2xl flex items-center gap-2 shrink-0">
-        <button id="strip-prev" class="p-2 rounded-xl hover:bg-white/5 text-slate-400 transition text-left"><i class="ph ph-caret-left font-bold"></i></button>
+        <button id="strip-prev" class="p-2 rounded-xl hover:bg-white/5 text-slate-400 transition text-left btn-press"><i class="ph ph-caret-left font-bold"></i></button>
         <div id="date-strip" class="flex-1 overflow-x-auto flex gap-1 custom-scroll pb-1 items-center scroll-smooth px-1"></div>
-        <button id="strip-next" class="p-2 rounded-xl hover:bg-white/5 text-slate-400 transition text-left"><i class="ph ph-caret-right font-bold"></i></button>
+        <button id="strip-next" class="p-2 rounded-xl hover:bg-white/5 text-slate-400 transition text-left btn-press"><i class="ph ph-caret-right font-bold"></i></button>
     </div>
 
     <!-- MAIN COCKPIT GRID -->
@@ -90,19 +95,19 @@
         <!-- LEFT COLUMN: Habits -->
         <div class="col-span-3 flex flex-col gap-3 h-full overflow-y-auto custom-scroll pr-1 pb-2">
             <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0 text-left">
-                <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2 text-left">
                     <i class="ph-fill ph-leaf text-emerald-500"></i> Habits
                 </h2>
                 <form id="habit-form" class="flex gap-2 mb-3">
                     <input type="text" id="habit-input" placeholder="New habit..." class="min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500" required>
-                    <button type="submit" id="habit-submit-btn" class="shrink-0 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-xs font-medium transition">Add</button>
+                    <button type="submit" id="habit-submit-btn" class="shrink-0 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-xs font-medium transition btn-press">Add</button>
                     <button type="button" id="habit-cancel-btn" onclick="cancelEdit('habit')" class="hidden shrink-0 text-slate-500 hover:text-white px-1 text-left"><i class="ph ph-x-circle text-lg"></i></button>
                 </form>
                 <div id="habit-list" class="space-y-2"></div>
             </div>
 
             <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0 text-left">
-                <div class="flex justify-between items-center mb-2 text-left">
+                <div class="flex justify-between items-center mb-2">
                     <h2 class="text-sm font-bold text-white flex items-center gap-2">
                         <i class="ph-fill ph-chart-line-up text-blue-500"></i> Progress
                     </h2>
@@ -122,10 +127,10 @@
             <div class="glass-panel p-4 rounded-2xl flex flex-col shrink-0 relative text-left">
                 
                 <div class="flex gap-1 mb-4 bg-black/40 p-1 rounded-xl shrink-0 border border-white/5">
-                    <button id="tab-execution" onclick="switchCenterView('execution')" class="flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 shadow-sm transition text-left">
+                    <button id="tab-execution" onclick="switchCenterView('execution')" class="flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 shadow-sm transition btn-press">
                         <i class="ph-fill ph-check-square-offset text-lg"></i> Tasks
                     </button>
-                    <button id="tab-diary" onclick="switchCenterView('diary')" class="flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition text-left">
+                    <button id="tab-diary" onclick="switchCenterView('diary')" class="flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition btn-press">
                         <i class="ph-fill ph-book-open-text text-lg"></i> Diary
                     </button>
                 </div>
@@ -134,19 +139,19 @@
                     <form id="task-form" class="flex gap-2 mb-4">
                         <input type="text" id="task-input" placeholder="What needs to be done?" class="min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" required>
                         <input type="number" id="task-income-input" placeholder="Linked ₹" class="w-20 shrink-0 bg-black/40 border border-white/10 rounded-lg px-2 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
-                        <button type="submit" id="task-submit-btn" class="shrink-0 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50">Add</button>
-                        <button type="button" id="task-cancel-btn" onclick="cancelEdit('task')" class="hidden shrink-0 text-slate-500 hover:text-white px-2 text-left"><i class="ph ph-x-circle text-lg"></i></button>
+                        <button type="submit" id="task-submit-btn" class="shrink-0 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50 btn-press">Add</button>
+                        <button type="button" id="task-cancel-btn" onclick="cancelEdit('task')" class="hidden shrink-0 text-slate-500 hover:text-white px-2"><i class="ph ph-x-circle text-lg"></i></button>
                     </form>
                     <div id="task-list" class="space-y-2"></div>
                 </div>
 
-                <div id="view-diary" class="hidden flex-col text-left text-left">
+                <div id="view-diary" class="hidden flex-col text-left">
                     <div class="flex justify-end mb-3">
-                        <button id="export-diary-btn" class="text-[10px] bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/20 px-2 py-1 rounded-md font-medium transition flex items-center gap-1 text-left">
+                        <button id="export-diary-btn" class="text-[10px] bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/20 px-2 py-1 rounded-md font-medium transition flex items-center gap-1 btn-press text-left">
                             <i class="ph ph-file-pdf"></i> PDF Report
                         </button>
                     </div>
-                    <button onclick="openDiaryModal()" class="w-full bg-black/40 border border-white/10 hover:bg-white/5 transition rounded-lg px-4 py-3 text-xs text-slate-400 text-left flex items-center gap-2 mb-4">
+                    <button onclick="openDiaryModal()" class="w-full bg-black/40 border border-white/10 hover:bg-white/5 transition rounded-lg px-4 py-3 text-xs text-slate-400 text-left flex items-center gap-2 mb-4 btn-press">
                         <i class="ph ph-plus-circle text-lg"></i> Add a new entry...
                     </button>
                     <ul id="diary-list" class="space-y-2"></ul>
@@ -155,7 +160,7 @@
         </div>
 
         <!-- RIGHT COLUMN: Stats & Money Tracker -->
-        <div class="col-span-4 flex flex-col gap-3 h-full overflow-y-auto custom-scroll pr-1 pb-2">
+        <div id="money-column" class="col-span-4 flex flex-col gap-3 h-full overflow-y-auto custom-scroll pr-1 pb-2">
             <div class="grid grid-cols-2 gap-2 shrink-0">
                 <div class="glass-panel p-3 rounded-2xl flex flex-col justify-center text-left">
                     <h2 class="text-slate-400 text-xs font-medium mb-1.5 flex items-center gap-1.5">
@@ -167,145 +172,147 @@
                     <h2 class="text-slate-400 text-xs font-medium mb-1.5 flex items-center gap-1.5 text-left">
                         <i class="ph-fill ph-arrows-down-up text-blue-400"></i> Flow
                     </h2>
-                    <div class="flex justify-between items-center text-[11px] mb-1 text-left">
-                        <span class="text-slate-500 text-left">Earned</span>
+                    <div class="flex justify-between items-center text-[11px] mb-1">
+                        <span class="text-slate-500">Earned</span>
                         <span class="font-semibold text-emerald-400" id="total-income">₹0</span>
                     </div>
-                    <div class="flex justify-between items-center text-[11px] text-left">
-                        <span class="text-slate-500 text-left text-left">Spent</span>
+                    <div class="flex justify-between items-center text-[11px]">
+                        <span class="text-slate-500 text-left">Spent</span>
                         <span class="font-semibold text-rose-400" id="total-expense">₹0</span>
                     </div>
                 </div>
                 <div class="glass-panel p-3 rounded-2xl col-span-2 shrink-0 text-left">
-                    <div class="flex justify-between items-center mb-1 text-left text-left">
-                        <h2 class="text-slate-400 text-xs font-medium flex items-center gap-1.5 text-left text-left">
+                    <div class="flex justify-between items-center mb-1">
+                        <h2 class="text-slate-400 text-xs font-medium flex items-center gap-1.5">
                             <i class="ph-fill ph-target text-indigo-400"></i> Daily Goal
                         </h2>
-                        <div class="flex items-center gap-1 text-left text-left text-left">
-                            <span id="goal-target-display" class="text-[10px] font-semibold bg-white/5 px-2 py-0.5 rounded text-slate-300 border border-white/10 text-left text-left">Target: ₹2000</span>
-                            <button onclick="editGoal()" class="text-slate-500 hover:text-indigo-400 transition p-1 rounded-md hover:bg-white/5 text-left text-left text-left"><i class="ph ph-pencil-simple"></i></button>
+                        <div class="flex items-center gap-1">
+                            <span id="goal-target-display" class="text-[10px] font-semibold bg-white/5 px-2 py-0.5 rounded text-slate-300 border border-white/10">Target: ₹2000</span>
+                            <button onclick="editGoal()" class="text-slate-500 hover:text-indigo-400 transition p-1 rounded-md hover:bg-white/5 btn-press"><i class="ph ph-pencil-simple"></i></button>
                         </div>
                     </div>
-                    <div class="flex items-end gap-2 mb-1.5 mt-0.5 text-left text-left text-left">
-                        <div class="text-2xl font-bold text-white leading-none text-left text-left text-left" id="goal-percentage">0%</div>
-                        <p class="text-[10px] text-slate-500 mb-0.5 text-left text-left" id="goal-deficit">Short: ₹0</p>
+                    <div class="flex items-end gap-2 mb-1.5 mt-0.5">
+                        <div class="text-2xl font-bold text-white leading-none" id="goal-percentage">0%</div>
+                        <p class="text-[10px] text-slate-500 mb-0.5" id="goal-deficit">Short: ₹0</p>
                     </div>
-                    <div class="w-full bg-black/40 rounded-full h-1.5 overflow-hidden text-left text-left text-left text-left">
-                        <div id="goal-bar" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)] text-left"></div>
+                    <div class="w-full bg-black/40 rounded-full h-1.5 overflow-hidden">
+                        <div id="goal-bar" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-panel p-3 rounded-2xl flex flex-col shrink-0 text-left text-left text-left">
-                <h2 class="text-sm font-bold text-white mb-2 flex items-center gap-2 text-left">
+            <div class="glass-panel p-3 rounded-2xl flex flex-col shrink-0 text-left">
+                <h2 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
                     <i class="ph-fill ph-currency-inr text-emerald-500"></i> Money Tracker
                 </h2>
 
-                <form id="transaction-form" class="flex flex-col gap-2 mb-3 bg-black/20 p-2.5 rounded-xl border border-white/5 text-left text-left text-left text-left">
-                    <div class="flex gap-2 text-left">
-                        <button type="button" id="btn-type-income" class="flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition text-left">Income</button>
-                        <button type="button" id="btn-type-expense" class="flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition text-left">Expense</button>
+                <form id="transaction-form" class="flex flex-col gap-2 mb-3 bg-black/20 p-2.5 rounded-xl border border-white/5">
+                    <div class="flex gap-2">
+                        <button type="button" id="btn-type-income" class="flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition btn-press">Income</button>
+                        <button type="button" id="btn-type-expense" class="flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition btn-press">Expense</button>
                     </div>
                     
                     <div id="category-panel" class="flex flex-wrap gap-1.5 py-0.5 text-left"></div>
                     
-                    <div class="flex gap-2 text-left text-left">
-                        <input type="text" id="trans-source" placeholder="Note / Details" class="min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500 text-left" required>
-                        <input type="number" id="trans-amount" placeholder="₹ Amt" class="w-20 shrink-0 bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500 text-left" required>
+                    <div class="flex gap-2">
+                        <input type="text" id="trans-source" placeholder="Note / Details" class="min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500" required>
+                        <input type="number" id="trans-amount" placeholder="₹ Amt" class="w-20 shrink-0 bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500" required>
                     </div>
                     
-                    <div class="flex gap-2 text-left text-left text-left">
-                        <button type="submit" id="trans-submit-btn" class="flex-1 bg-white/10 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-white/20 border border-white/10 transition text-left">Log Transaction</button>
-                        <button type="button" id="trans-cancel-btn" onclick="cancelEdit('transaction')" class="hidden bg-white/5 text-slate-400 py-1.5 px-3 rounded-lg text-xs font-medium hover:bg-white/10 border border-white/5 transition text-left">Cancel</button>
+                    <div class="flex gap-2">
+                        <button type="submit" id="trans-submit-btn" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg text-xs font-bold transition shadow-lg shadow-indigo-900/40 border border-indigo-500/30 btn-press">Log Transaction</button>
+                        <button type="button" id="trans-cancel-btn" onclick="cancelEdit('transaction')" class="hidden bg-white/5 text-slate-400 py-1.5 px-3 rounded-lg text-xs font-medium hover:bg-white/10 border border-white/5 transition btn-press">Cancel</button>
                     </div>
                 </form>
 
-                <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 shrink-0 text-left text-left text-left text-left">Ledger</h3>
-                <div id="transaction-list" class="space-y-1.5 text-left text-left text-left text-left text-left"></div>
+                <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 shrink-0 text-left">Ledger</h3>
+                <div id="transaction-list" class="space-y-1.5 text-left"></div>
             </div>
         </div>
     </div>
+
+    <!-- Floating Refresh Button -->
+    <button onclick="window.location.reload()" class="fixed bottom-6 right-6 w-12 h-12 glass-panel rounded-full flex items-center justify-center text-indigo-400 hover:text-white hover:bg-indigo-600 transition-all shadow-2xl border border-white/10 btn-press z-[90]" title="Reload Systems">
+        <i class="ph ph-arrows-clockwise text-xl"></i>
+    </button>
 
     <!-- Modals -->
     <div id="goal-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="glass-panel rounded-2xl shadow-2xl w-full max-w-sm flex flex-col modal-enter">
-            <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center shrink-0 bg-black/20 text-left text-left text-left text-left">
-                <h2 class="text-sm font-bold text-white flex items-center gap-2"><i class="ph-fill ph-target text-indigo-500"></i> Set Daily Goal</h2>
+            <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center shrink-0 bg-black/20 text-left text-left text-left">
+                <h2 class="text-sm font-bold text-white flex items-center gap-2"><i class="ph-fill ph-target text-indigo-500 text-left"></i> Set Daily Goal</h2>
                 <button onclick="closeGoalModal()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-left"><i class="ph ph-x"></i></button>
             </div>
-            <div class="p-6 flex flex-col gap-4 text-left text-left text-left text-left">
+            <div class="p-6 flex flex-col gap-4 text-left">
                 <input type="number" id="goal-modal-input" placeholder="Target amount (₹)" class="bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-lg font-semibold text-white focus:outline-none focus:border-indigo-500 w-full text-left" required>
-                <button onclick="saveGoal()" class="w-full bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50 text-left">Save Goal</button>
+                <button onclick="saveGoal()" class="w-full bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50 text-left btn-press">Save Goal</button>
             </div>
         </div>
     </div>
 
-    <div id="diary-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 text-left">
-        <div class="glass-panel rounded-2xl shadow-2xl w-full max-w-2xl h-[70vh] flex flex-col modal-enter text-left text-left">
-            <div class="px-6 py-4 flex justify-between items-center shrink-0 border-b border-white/5 text-left text-left text-left">
-                <div class="text-slate-400 text-[11px] font-medium flex items-center gap-2 uppercase tracking-wider text-left text-left text-left">
-                    <i class="ph ph-calendar"></i> <span id="diary-modal-date" class="text-left text-left text-left"></span>
+    <div id="diary-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl shadow-2xl w-full max-w-2xl h-[70vh] flex flex-col modal-enter text-left">
+            <div class="px-6 py-4 flex justify-between items-center shrink-0 border-b border-white/5">
+                <div class="text-slate-400 text-[11px] font-medium flex items-center gap-2 uppercase tracking-wider text-left">
+                    <i class="ph ph-calendar text-left"></i> <span id="diary-modal-date" class="text-left"></span>
                 </div>
-                <button onclick="closeDiaryModal()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-left text-left"><i class="ph ph-x"></i></button>
+                <button onclick="closeDiaryModal()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-left"><i class="ph ph-x"></i></button>
             </div>
-            <div class="p-8 flex-1 overflow-y-auto custom-scroll flex flex-col gap-4 text-left text-left text-left text-left">
+            <div class="p-8 flex-1 overflow-y-auto custom-scroll flex flex-col gap-4 text-left">
                 <input type="text" id="diary-modal-title" placeholder="Entry Title" class="bg-transparent text-3xl font-bold text-white focus:outline-none placeholder-slate-600 w-full mb-2 text-left">
                 <textarea id="diary-modal-details" placeholder="Write your notes here..." class="bg-transparent text-sm text-slate-300 focus:outline-none placeholder-slate-600 w-full flex-1 resize-none leading-relaxed text-left"></textarea>
             </div>
-            <div class="px-6 py-4 border-t border-white/5 flex justify-end shrink-0 bg-black/20 text-left text-left">
-                <button onclick="saveDiaryEntry()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50 text-left text-left">Save Entry</button>
+            <div class="px-6 py-4 border-t border-white/5 flex justify-end shrink-0 bg-black/20 text-left">
+                <button onclick="saveDiaryEntry()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50 text-left btn-press">Save Entry</button>
             </div>
         </div>
     </div>
 
-    <!-- Monthly Report Modal -->
-    <div id="monthly-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 text-left text-left text-left">
-        <div class="glass-panel rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden modal-enter flex flex-col text-left text-left text-left text-left">
-            <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center shrink-0 bg-black/20 text-left text-left text-left">
+    <div id="monthly-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden modal-enter flex flex-col text-left">
+            <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center shrink-0 bg-black/20">
                 <h2 class="text-xl font-bold text-white flex items-center gap-2 text-left">
-                    <i class="ph-fill ph-chart-pie-slice text-indigo-500 text-left"></i> <span id="modal-month-title" class="text-left text-left text-left text-left">Monthly Report</span>
+                    <i class="ph-fill ph-chart-pie-slice text-indigo-500"></i> <span id="modal-month-title">Monthly Report</span>
                 </h2>
-                <button onclick="closeMonthlyReport()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-left text-left text-left"><i class="ph ph-x text-left"></i></button>
+                <button onclick="closeMonthlyReport()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10"><i class="ph ph-x text-left"></i></button>
             </div>
-            
-            <div class="p-6 overflow-y-auto custom-scroll flex-1 text-left text-left text-left text-left text-left">
-                <div class="grid grid-cols-3 gap-4 mb-6 text-left text-left text-left text-left">
-                    <div class="bg-emerald-900/10 p-4 rounded-2xl border border-emerald-500/20 text-center text-left text-left">
-                        <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1 text-left text-left">Total Earned</p>
-                        <p class="text-2xl font-bold text-emerald-400 text-left text-left" id="modal-income">₹0</p>
+            <div class="p-6 overflow-y-auto custom-scroll flex-1 text-left">
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-emerald-900/10 p-4 rounded-2xl border border-emerald-500/20 text-center">
+                        <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1 text-left">Total Earned</p>
+                        <p class="text-2xl font-bold text-emerald-400 text-left" id="modal-income">₹0</p>
                     </div>
-                    <div class="bg-rose-900/10 p-4 rounded-2xl border border-rose-500/20 text-center text-left text-left">
+                    <div class="bg-rose-900/10 p-4 rounded-2xl border border-rose-500/20 text-center text-left">
                         <p class="text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1 text-left text-left">Total Spent</p>
-                        <p class="text-2xl font-bold text-rose-400 text-left text-left" id="modal-expense">₹0</p>
+                        <p class="text-2xl font-bold text-rose-400 text-left" id="modal-expense">₹0</p>
                     </div>
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center shadow-sm text-left text-left">
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center shadow-sm text-left">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 text-left text-left">Net Profit</p>
-                        <p class="text-2xl font-bold text-white text-left text-left" id="modal-net">₹0</p>
+                        <p class="text-2xl font-bold text-white text-left" id="modal-net">₹0</p>
                     </div>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left text-left text-left text-left text-left">
-                    <div class="md:col-span-2 bg-black/20 p-4 rounded-2xl border border-white/5 text-left text-left">
-                        <h3 class="text-xs font-bold text-slate-300 mb-3 border-b border-white/10 pb-2 flex items-center gap-2 text-left"><i class="ph-fill ph-chart-bar text-indigo-400 text-left text-left"></i> Income vs Expense Flow</h3>
-                        <div class="w-full h-56 relative text-left text-left text-left text-left text-left"><canvas id="flow-chart"></canvas></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                    <div class="md:col-span-2 bg-black/20 p-4 rounded-2xl border border-white/5 text-left">
+                        <h3 class="text-xs font-bold text-slate-300 mb-3 border-b border-white/10 pb-2 flex items-center gap-2 text-left"><i class="ph-fill ph-chart-bar text-indigo-400"></i> Income vs Expense Flow</h3>
+                        <div class="w-full h-56 relative text-left"><canvas id="flow-chart"></canvas></div>
                     </div>
-                    <div class="bg-black/20 p-4 rounded-2xl border border-white/5 text-left text-left text-left">
-                        <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2 text-left text-left">
-                            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2 text-left text-left"><i class="ph-fill ph-trend-up text-emerald-500 text-left text-left text-left"></i> Income by Tag</h3>
-                            <select id="sort-income-select" class="text-[10px] border border-white/10 rounded px-1.5 py-1 focus:outline-none text-slate-300 bg-black/40 cursor-pointer text-left text-left text-left">
+                    <div class="bg-black/20 p-4 rounded-2xl border border-white/5 text-left">
+                        <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
+                            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2 text-left"><i class="ph-fill ph-trend-up text-emerald-500"></i> Income by Tag</h3>
+                            <select id="sort-income-select" class="text-[10px] border border-white/10 rounded px-1.5 py-1 focus:outline-none text-slate-300 bg-black/40 cursor-pointer">
                                 <option value="highest">Highest ₹</option><option value="lowest">Lowest ₹</option><option value="alpha">A - Z</option>
                             </select>
                         </div>
-                        <div id="income-category-list" class="space-y-4 max-h-[250px] overflow-y-auto custom-scroll pr-2 text-left text-left text-left text-left"></div>
+                        <div id="income-category-list" class="space-y-4 max-h-[250px] overflow-y-auto custom-scroll pr-2 text-left"></div>
                     </div>
-                    <div class="bg-black/20 p-4 rounded-2xl border border-white/5 text-left text-left text-left">
-                        <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2 text-left text-left">
-                            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2 text-left text-left"><i class="ph-fill ph-trend-down text-rose-500 text-left text-left text-left"></i> Expense by Tag</h3>
-                            <select id="sort-expense-select" class="text-[10px] border border-white/10 rounded px-1.5 py-1 focus:outline-none text-slate-300 bg-black/40 cursor-pointer text-left text-left">
+                    <div class="bg-black/20 p-4 rounded-2xl border border-white/5 text-left">
+                        <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2 text-left">
+                            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2 text-left"><i class="ph-fill ph-trend-down text-rose-500"></i> Expense by Tag</h3>
+                            <select id="sort-expense-select" class="text-[10px] border border-white/10 rounded px-1.5 py-1 focus:outline-none text-slate-300 bg-black/40 cursor-pointer">
                                 <option value="highest">Highest ₹</option><option value="lowest">Lowest ₹</option><option value="alpha">A - Z</option>
                             </select>
                         </div>
-                        <div id="expense-category-list" class="space-y-4 max-h-[250px] overflow-y-auto custom-scroll pr-2 text-left text-left text-left text-left"></div>
+                        <div id="expense-category-list" class="space-y-4 max-h-[250px] overflow-y-auto custom-scroll pr-2 text-left"></div>
                     </div>
                 </div>
             </div>
@@ -316,9 +323,7 @@
         const SUPABASE_URL = 'https://weiqjcmkkeuqxodkoqpd.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlaXFqY21ra2V1cXhvZGtvcXBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NTMxMzgsImV4cCI6MjA3NzMyOTEzOH0.9hvIDbStGyFStnG0FJl_9w0LSbzcru9tf6drJ_uAKts';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // Changed to 'let' to allow assignment if auth was used, though we use fixed ID here for direct access
-        let currentUser = { id: '00000000-0000-0000-0000-000000000001' };
+        const currentUser = { id: '00000000-0000-0000-0000-000000000001' };
 
         Chart.defaults.color = '#64748b';
         Chart.defaults.font.family = "'Inter', sans-serif";
@@ -391,6 +396,8 @@
             els.privacyIcon = document.getElementById('privacy-icon');
             els.loadingScreen = document.getElementById('loading-screen');
             els.dbStatusLight = document.getElementById('db-status-light');
+            els.sortIncomeSelect = document.getElementById('sort-income-select');
+            els.sortExpenseSelect = document.getElementById('sort-expense-select');
         };
 
         async function init() {
@@ -459,13 +466,12 @@
             if (view === 'execution') {
                 els.viewExecution.classList.remove('hidden'); els.viewExecution.classList.add('flex');
                 els.viewDiary.classList.remove('flex'); els.viewDiary.classList.add('hidden');
-                els.tabExecution.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 shadow-sm transition';
-                els.tabDiary.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition';
+                els.tabExecution.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 shadow-sm transition text-left';
+                els.tabDiary.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition text-left';
             } else {
-                els.viewExecution.classList.add('hidden'); els.viewExecution.classList.remove('flex');
-                els.viewDiary.classList.remove('hidden'); els.viewDiary.classList.add('flex');
-                els.tabDiary.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-amber-500/20 text-amber-400 border border-amber-500/20 shadow-sm transition';
-                els.tabExecution.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition';
+                els.viewExecution.classList.replace('flex', 'hidden'); els.viewDiary.classList.replace('hidden', 'flex');
+                els.tabDiary.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 bg-amber-500/20 text-amber-400 border border-amber-500/20 shadow-sm transition text-left';
+                els.tabExecution.className = 'flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent transition text-left';
             }
         }
 
@@ -481,7 +487,8 @@
         async function saveGoal() {
             const newGoal = Number(document.getElementById('goal-modal-input').value);
             if (newGoal > 0) {
-                await supabaseClient.from('dailyos_daily_goals').upsert({ user_id: currentUser.id, goal_date: state.currentDate, goal_amount: newGoal }, { onConflict: 'user_id, goal_date' });
+                const { error } = await supabaseClient.from('dailyos_daily_goals').upsert({ user_id: currentUser.id, goal_date: state.currentDate, goal_amount: newGoal }, { onConflict: 'user_id, goal_date' });
+                if(error) { console.error(error); return; }
                 getDayData().goal = newGoal; renderDashboard(); closeGoalModal();
             }
         }
@@ -502,10 +509,10 @@
                 let dotColor = 'transparent';
                 if (dateStr <= todayStr) dotColor = hasDiary ? '#10b981' : '#f43f5e';
 
-                btn.className = `flex flex-col items-center justify-center min-w-[3.2rem] py-1.5 px-1 rounded-xl transition shrink-0 border ${isSelected ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg' : isToday ? 'bg-white/10 border-white/20' : 'border-transparent text-slate-500 hover:bg-white/5'}`;
-                btn.innerHTML = `<span class="text-[9px] uppercase font-bold tracking-wider mb-0.5">${dayNames[dateObj.getDay()]}</span>
-                                 <span class="text-sm font-bold leading-none">${i}</span>
-                                 <div class="w-1.5 h-1.5 rounded-full mt-1" style="background: ${dotColor}"></div>`;
+                btn.className = `flex flex-col items-center justify-center min-w-[3.2rem] py-1.5 px-1 rounded-xl transition shrink-0 border ${isSelected ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg text-left' : isToday ? 'bg-white/10 border-white/20 text-left' : 'border-transparent text-slate-500 hover:bg-white/5 text-left'}`;
+                btn.innerHTML = `<span class="text-[9px] uppercase font-bold tracking-wider mb-0.5 text-left">${dayNames[dateObj.getDay()]}</span>
+                                 <span class="text-sm font-bold leading-none text-left">${i}</span>
+                                 <div class="w-1.5 h-1.5 rounded-full mt-1 text-left" style="background: ${dotColor}"></div>`;
                 btn.onclick = () => { cancelAllEdits(); state.currentDate = dateStr; renderAll(); };
                 els.dateStrip.appendChild(btn);
                 if (isSelected) activeElement = btn;
@@ -525,31 +532,32 @@
             els.goalTargetDisplay.textContent = state.privacyMode ? 'Target: ••••' : `Target: ₹${dayData.goal}`;
             
             const statusClass = net > 0 ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : net < 0 ? "bg-rose-500/10 text-rose-400 border-rose-500/20" : "bg-white/5 text-slate-400 border-white/10";
-            els.profitIndicator.className = `px-3 py-1.5 rounded-full font-medium text-xs flex items-center gap-1.5 ${statusClass} hidden md:flex`;
-            els.profitIndicator.innerHTML = net > 0 ? `<i class="ph-fill ph-trend-up"></i> Profitable` : net < 0 ? `<i class="ph-fill ph-trend-down"></i> Losing` : `<i class="ph-fill ph-minus"></i> Breakeven`;
+            els.profitIndicator.className = `px-3 py-1.5 rounded-full font-medium text-xs flex items-center gap-1.5 ${statusClass} hidden md:flex text-left`;
+            els.profitIndicator.innerHTML = net > 0 ? `<i class="ph-fill ph-trend-up text-left"></i> Profitable` : net < 0 ? `<i class="ph-fill ph-trend-down text-left"></i> Losing` : `<i class="ph-fill ph-minus text-left"></i> Breakeven`;
 
             const progress = Math.min((income / dayData.goal) * 100, 100).toFixed(0);
             els.goalPercentage.textContent = state.privacyMode ? '••%' : `${progress}%`;
             els.goalBar.style.width = `${progress}%`;
-            els.goalBar.className = income >= dayData.goal ? "bg-emerald-500 h-1.5 rounded-full transition-all" : "bg-indigo-500 h-1.5 rounded-full transition-all";
+            els.goalBar.className = income >= dayData.goal ? "bg-emerald-500 h-1.5 rounded-full transition-all shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-indigo-500 h-1.5 rounded-full transition-all shadow-[0_0_10px_rgba(99,102,241,0.5)]";
             els.goalDeficit.textContent = state.privacyMode ? 'Status hidden' : income >= dayData.goal ? `Surplus: ₹${(income - dayData.goal).toLocaleString()}` : `Short: ₹${(dayData.goal - income).toLocaleString()}`;
         }
 
         function renderTasks() {
             const tasks = getTasksForDate(state.currentDate);
-            els.taskList.innerHTML = tasks.length === 0 ? `<p class="text-xs text-slate-600 text-center py-6">No tasks on deck.</p>` : '';
+            els.taskList.innerHTML = tasks.length === 0 ? `<p class="text-xs text-slate-600 text-center py-6 text-left">No tasks on deck.</p>` : '';
             tasks.forEach(task => {
                 const div = document.createElement('div');
-                div.className = `group flex items-center justify-between p-2.5 rounded-xl border ${task.is_completed ? 'bg-white/5 border-transparent' : 'bg-black/20 border-white/5'} transition relative`;
+                div.className = `group flex items-center justify-between p-2.5 rounded-xl border ${task.is_completed ? 'bg-white/5 border-transparent text-left' : 'bg-black/20 border-white/5 text-left'} transition relative`;
                 div.innerHTML = `
-                    <div class="flex items-center gap-3 min-w-0 flex-1">
-                        <input type="checkbox" ${task.is_completed ? 'checked' : ''} onchange="toggleTask('${task.id}', '${task.originalDate}')" class="w-4 h-4 shrink-0 text-indigo-500 bg-black/50 border-white/20 rounded cursor-pointer">
-                        <span class="text-xs font-medium min-w-0 break-words ${task.is_completed ? 'text-slate-600 line-through' : 'text-slate-200'}">${task.text}</span>
+                    <div class="flex items-center gap-3 min-w-0 flex-1 text-left">
+                        <input type="checkbox" ${task.is_completed ? 'checked' : ''} onchange="toggleTask('${task.id}', '${task.originalDate}')" class="w-4 h-4 shrink-0 text-indigo-500 bg-black/50 border-white/20 rounded cursor-pointer text-left">
+                        <span class="text-xs font-medium min-w-0 break-words ${task.is_completed ? 'text-slate-600 line-through text-left opacity-50' : 'text-slate-200 text-left'} transition-all">${task.text}</span>
+                        ${(task.originalDate < state.currentDate && !task.is_completed) ? `<span class="text-[9px] shrink-0 text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20 ml-2 text-left">Carried</span>` : ''}
                     </div>
-                    <div class="flex items-center gap-2 pl-2 shrink-0">
-                        ${task.linked_income > 0 ? `<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1"><i class="ph-fill ph-coins"></i> ₹${task.linked_income}</span>` : ''}
-                        <button onclick="editTask('${task.id}', '${task.originalDate}')" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-indigo-400 p-1 transition-all"><i class="ph ph-pencil-simple"></i></button>
-                        <button onclick="deleteTask('${task.id}', '${task.originalDate}')" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-rose-400 p-1 transition-all"><i class="ph ph-trash"></i></button>
+                    <div class="flex items-center gap-2 pl-2 shrink-0 text-left">
+                        ${task.linked_income > 0 ? `<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1 text-left"><i class="ph-fill ph-coins text-left"></i> ₹${task.linked_income}</span>` : ''}
+                        <button onclick="editTask('${task.id}', '${task.originalDate}')" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-indigo-400 p-1 transition-all text-left"><i class="ph ph-pencil-simple text-left"></i></button>
+                        <button onclick="deleteTask('${task.id}', '${task.originalDate}')" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-rose-400 p-1 transition-all text-left"><i class="ph ph-trash text-left"></i></button>
                     </div>`;
                 els.taskList.appendChild(div);
             });
@@ -557,8 +565,23 @@
 
         async function toggleTask(id, originalDate) {
             const task = state.days[originalDate].tasks.find(t => t.id === id);
+            
+            // UI Update: Instant Strike-through
             task.is_completed = !task.is_completed;
+            renderTasks(); 
+            
+            // Money Suggestion logic
+            if (task.is_completed && task.linked_income > 0) {
+                setTransactionType('income');
+                els.transSource.value = task.text;
+                els.transAmount.value = task.linked_income;
+                document.getElementById('money-column').scrollIntoView({ behavior: 'smooth' });
+                els.transSource.focus();
+            }
+
+            // Sync to Database
             await supabaseClient.from('dailyos_tasks').update({ is_completed: task.is_completed }).eq('id', id);
+            
             if (task.is_completed) {
                 if (originalDate !== state.currentDate) {
                     state.days[originalDate].tasks = state.days[originalDate].tasks.filter(t => t.id !== id);
@@ -567,7 +590,6 @@
                 }
                 const { data } = await supabaseClient.from('dailyos_diary_entries').insert({ user_id: currentUser.id, diary_date: state.currentDate, title: `Completed: ${task.text} ✅`, details: '' }).select();
                 if(data) getDayData(state.currentDate).diary.push(data[0]);
-                if (task.linked_income > 0) { setTransactionType('income'); els.transSource.value = task.text; els.transAmount.value = task.linked_income; els.transSource.focus(); }
             }
             renderAll();
         }
@@ -590,31 +612,30 @@
             currentTags.forEach(tag => {
                 const btn = document.createElement('button'); btn.type = 'button';
                 const activeColor = state.activeTransactionType === 'income' ? 'bg-emerald-500 text-white border-emerald-500 shadow-md' : 'bg-rose-500 text-white border-rose-500 shadow-md';
-                btn.className = `px-2.5 py-1 text-[10px] font-medium rounded-full border transition-all ${state.activeTag === tag ? activeColor : 'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10'}`;
+                btn.className = `px-2.5 py-1 text-[10px] font-medium rounded-full border transition-all text-left ${state.activeTag === tag ? activeColor : 'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10'}`;
                 btn.textContent = tag; btn.onclick = () => { state.activeTag = tag; renderCategoryTags(); };
                 els.categoryPanel.appendChild(btn);
             });
 
             const addWrapper = document.createElement('div');
-            addWrapper.className = 'flex items-center shrink-0';
+            addWrapper.className = 'flex items-center shrink-0 text-left';
             const addBtn = document.createElement('button');
             addBtn.type = 'button';
-            addBtn.className = 'px-2.5 py-1 text-[10px] font-medium rounded-full border border-dashed border-slate-600 text-slate-500 hover:bg-white/10 hover:text-slate-400 transition flex items-center gap-1';
-            addBtn.innerHTML = '<i class="ph ph-plus"></i> Add';
+            addBtn.className = 'px-2.5 py-1 text-[10px] font-medium rounded-full border border-dashed border-slate-600 text-slate-500 hover:bg-white/10 hover:text-slate-400 transition flex items-center gap-1 text-left';
+            addBtn.innerHTML = '<i class="ph ph-plus text-left"></i> Add';
             
             addBtn.onclick = () => {
+                const formId = `form-${Date.now()}`;
                 addWrapper.innerHTML = `
-                    <form id="new-tag-form" class="flex items-center gap-1">
-                        <input type="text" id="new-tag-input" class="w-20 px-2 py-1 text-[10px] font-medium rounded-full border border-indigo-500 focus:outline-none bg-black/50 text-white" placeholder="New Tag" autocomplete="off">
-                        <button type="submit" class="p-1 bg-indigo-500/20 text-indigo-400 rounded-full hover:bg-indigo-500/30 transition"><i class="ph ph-check"></i></button>
-                        <button type="button" id="cancel-tag-btn" class="p-1 bg-white/10 text-slate-400 rounded-full hover:bg-white/20 transition"><i class="ph ph-x"></i></button>
+                    <form id="${formId}" class="flex items-center gap-1 text-left">
+                        <input type="text" id="new-tag-input" class="w-20 px-2 py-1 text-[10px] font-medium rounded-full border border-indigo-500 focus:outline-none bg-black/50 text-white text-left" placeholder="New Tag" autocomplete="off">
+                        <button type="submit" class="p-1 bg-indigo-500/20 text-indigo-400 rounded-full hover:bg-indigo-500/30 transition text-left"><i class="ph ph-check text-left"></i></button>
+                        <button type="button" id="cancel-tag-btn" class="p-1 bg-white/10 text-slate-400 rounded-full hover:bg-white/20 transition text-left"><i class="ph ph-x text-left"></i></button>
                     </form>`;
                 
-                // Safe query within wrapper
-                const form = addWrapper.querySelector('#new-tag-form');
-                const input = addWrapper.querySelector('#new-tag-input');
-                const cancelBtn = addWrapper.querySelector('#cancel-tag-btn');
-
+                const form = document.getElementById(formId);
+                const input = form.querySelector('#new-tag-input');
+                const cancelBtn = form.querySelector('#cancel-tag-btn');
                 setTimeout(() => input.focus(), 10);
                 
                 form.addEventListener('submit', async (e) => {
@@ -630,7 +651,6 @@
                     }
                     renderCategoryTags();
                 });
-                
                 cancelBtn.addEventListener('click', renderCategoryTags);
             };
             addWrapper.appendChild(addBtn); els.categoryPanel.appendChild(addWrapper);
@@ -639,33 +659,33 @@
         function setTransactionType(type) {
             state.activeTransactionType = type; renderCategoryTags(); 
             if (type === 'income') {
-                els.btnIncome.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition";
-                els.btnExpense.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition";
-                els.transSource.className = els.transAmount.className = "min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500";
+                els.btnIncome.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition text-left btn-press";
+                els.btnExpense.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition text-left btn-press";
+                els.transSource.className = els.transAmount.className = "min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500 text-left";
             } else {
-                els.btnExpense.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-rose-500/20 text-rose-400 border border-rose-500/30 transition";
-                els.btnIncome.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition";
-                els.transSource.className = "min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-rose-500";
+                els.btnExpense.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-rose-500/20 text-rose-400 border border-rose-500/30 transition text-left btn-press";
+                els.btnIncome.className = "flex-1 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md bg-white/5 text-slate-400 border border-white/5 hover:bg-white/10 transition text-left btn-press";
+                els.transSource.className = "min-w-0 flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-rose-500 text-left";
             }
         }
 
         function renderTransactions() {
-            const dayData = getDayData(); els.transactionList.innerHTML = dayData.transactions.length === 0 ? `<p class="text-xs text-slate-600 text-center py-4">No transactions.</p>` : '';
+            const dayData = getDayData(); els.transactionList.innerHTML = dayData.transactions.length === 0 ? `<p class="text-xs text-slate-600 text-center py-4 text-left">No transactions.</p>` : '';
             [...dayData.transactions].reverse().forEach(t => {
                 const div = document.createElement('div');
                 const isInc = t.trans_type === 'income';
-                div.className = `group flex flex-col gap-1.5 p-2 rounded-lg bg-black/20 border ${state.editModes.transaction === t.id ? 'border-indigo-500' : 'border-white/5'} transition`;
+                div.className = `group flex flex-col gap-1.5 p-2 rounded-lg bg-black/20 border ${state.editModes.transaction === t.id ? 'border-indigo-500 text-left' : 'border-white/5 text-left'} transition`;
                 div.innerHTML = `
-                    <div class="flex items-center justify-between gap-2 min-w-0">
-                        <div class="flex items-center gap-2 min-w-0 flex-1">
-                            ${t.category ? `<span class="shrink-0 text-[9px] font-bold px-1.5 py-0.5 border rounded uppercase ${isInc ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}">${t.category}</span>` : ''}
-                            <span class="text-xs font-medium text-slate-300 min-w-0 break-words">${t.source}</span>
+                    <div class="flex items-center justify-between gap-2 min-w-0 text-left">
+                        <div class="flex items-center gap-2 min-w-0 flex-1 text-left">
+                            ${t.category ? `<span class="shrink-0 text-[9px] font-bold px-1.5 py-0.5 border rounded uppercase text-left ${isInc ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-left' : 'bg-rose-500/10 text-rose-400 border-rose-500/20 text-left'}">${t.category}</span>` : ''}
+                            <span class="text-xs font-medium text-slate-300 min-w-0 break-words text-left">${t.source}</span>
                         </div>
-                        <span class="shrink-0 text-xs font-bold ${isInc ? 'text-emerald-400' : 'text-rose-400'}">${isInc ? '+' : '-'}₹${Number(t.amount).toLocaleString()}</span>
+                        <span class="shrink-0 text-xs font-bold text-left ${isInc ? 'text-emerald-400 text-left' : 'text-rose-400 text-left'}">${isInc ? '+' : '-'}₹${Number(t.amount).toLocaleString()}</span>
                     </div>
-                    <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition -mt-2">
-                        <button onclick="editTransaction('${t.id}')" class="text-slate-500 hover:text-emerald-400 p-1 transition-all"><i class="ph ph-pencil-simple"></i></button>
-                        <button onclick="deleteTransaction('${t.id}')" class="text-slate-500 hover:text-rose-400 p-1 transition-all"><i class="ph ph-trash"></i></button>
+                    <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition -mt-2 text-left">
+                        <button onclick="editTransaction('${t.id}')" class="text-slate-500 hover:text-emerald-400 p-1 transition-all text-left"><i class="ph ph-pencil-simple text-left"></i></button>
+                        <button onclick="deleteTransaction('${t.id}')" class="text-slate-500 hover:text-rose-400 p-1 transition-all text-left"><i class="ph ph-trash text-left"></i></button>
                     </div>`;
                 els.transactionList.appendChild(div);
             });
@@ -677,7 +697,7 @@
             if (t.category) { state.activeTag = t.category; renderCategoryTags(); }
             els.transSource.value = t.source; els.transAmount.value = t.amount;
             els.transBtn.textContent = 'Save Changes';
-            els.transBtn.className = 'flex-1 bg-amber-600 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-amber-500 transition border border-amber-500 shadow-lg';
+            els.transBtn.className = 'flex-1 bg-amber-600 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-amber-500 transition border border-amber-500 shadow-lg text-left btn-press';
             els.transCancelBtn.classList.remove('hidden'); els.transSource.focus();
             renderTransactions();
         }
@@ -697,22 +717,22 @@
         }
 
         function renderDiary() {
-            const dayData = getDayData(); els.diaryList.innerHTML = dayData.diary.length === 0 ? `<p class="text-xs text-slate-600 italic py-4 text-center">No entries.</p>` : '';
+            const dayData = getDayData(); els.diaryList.innerHTML = dayData.diary.length === 0 ? `<p class="text-xs text-slate-600 italic py-4 text-center text-left">No entries.</p>` : '';
             dayData.diary.forEach(point => {
                 const li = document.createElement('li');
-                li.className = `group flex flex-col gap-1 text-xs text-slate-300 bg-amber-900/10 p-3 rounded-xl border border-amber-500/20 cursor-pointer hover:bg-amber-900/20 transition-all`;
+                li.className = `group flex flex-col gap-1 text-xs text-slate-300 bg-amber-900/10 p-3 rounded-xl border border-amber-500/20 cursor-pointer hover:bg-amber-900/20 transition-all text-left text-left`;
                 li.onclick = (e) => { if (!e.target.closest('.diary-actions')) openDiaryModal(point.id); };
                 li.innerHTML = `
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="flex gap-2 items-start flex-1 min-w-0">
-                            <i class="ph-fill ph-check-circle text-amber-500 mt-0.5 shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.4)] rounded-full"></i>
-                            <div class="flex-1 min-w-0">
-                                <div class="font-semibold text-amber-100 break-words">${point.title}</div>
-                                ${point.details ? `<p class="text-[10px] text-slate-400 mt-1 line-clamp-2">${point.details}</p>` : ''}
+                    <div class="flex justify-between items-start gap-2 text-left">
+                        <div class="flex gap-2 items-start flex-1 min-w-0 text-left">
+                            <i class="ph-fill ph-check-circle text-amber-500 mt-0.5 shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.4)] rounded-full text-left"></i>
+                            <div class="flex-1 min-w-0 text-left">
+                                <div class="font-semibold text-amber-100 break-words text-left">${point.title}</div>
+                                ${point.details ? `<p class="text-[10px] text-slate-400 mt-1 line-clamp-2 text-left">${point.details}</p>` : ''}
                             </div>
                         </div>
-                        <div class="diary-actions flex gap-1 opacity-0 group-hover:opacity-100 transition shrink-0">
-                            <button onclick="deleteDiary('${point.id}')" class="text-slate-500 hover:text-rose-400 p-1 transition-all"><i class="ph ph-trash"></i></button>
+                        <div class="diary-actions flex gap-1 opacity-0 group-hover:opacity-100 transition shrink-0 text-left text-left">
+                            <button onclick="deleteDiary('${point.id}')" class="text-slate-500 hover:text-rose-400 p-1 transition-all text-left btn-press"><i class="ph ph-trash text-left"></i></button>
                         </div>
                     </div>`;
                 els.diaryList.appendChild(li);
@@ -724,15 +744,15 @@
             state.habits.forEach(habit => {
                 const isDone = !!getDayData().habitLogs[habit.id];
                 const div = document.createElement('div');
-                div.className = `group flex items-center justify-between p-2.5 rounded-xl border ${isDone ? 'bg-emerald-900/10 border-emerald-500/20' : 'bg-black/20 border-white/5'} transition-all`;
+                div.className = `group flex items-center justify-between p-2.5 rounded-xl border ${isDone ? 'bg-emerald-900/10 border-emerald-500/20 text-left' : 'bg-black/20 border-white/5 text-left'} transition-all`;
                 div.innerHTML = `
-                    <div class="flex items-center gap-3 min-w-0 flex-1">
-                        <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleHabit('${habit.id}')" class="w-4 h-4 shrink-0 text-indigo-500 bg-black/50 border-white/20 rounded cursor-pointer">
-                        <span class="text-xs font-medium min-w-0 break-words ${isDone ? 'opacity-70 line-through' : ''}">${state.privacyMode ? '••••••••' : habit.text}</span>
+                    <div class="flex items-center gap-3 min-w-0 flex-1 text-left text-left">
+                        <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleHabit('${habit.id}')" class="w-4 h-4 shrink-0 text-indigo-500 bg-black/50 border-white/20 rounded cursor-pointer text-left text-left">
+                        <span class="text-xs font-medium min-w-0 break-words ${isDone ? 'opacity-70 line-through text-left' : 'text-left'} text-left transition-all">${state.privacyMode ? '••••••••' : habit.text}</span>
                     </div>
-                    <div class="opacity-0 group-hover:opacity-100 flex gap-1 transition-opacity">
-                        <button onclick="editHabit('${habit.id}')" class="text-slate-500 hover:text-indigo-400 p-1 transition-all"><i class="ph ph-pencil-simple"></i></button>
-                        <button onclick="deleteHabitGlobal('${habit.id}')" class="text-slate-500 hover:text-rose-400 p-1 transition-all"><i class="ph ph-trash"></i></button>
+                    <div class="opacity-0 group-hover:opacity-100 flex gap-1 transition-opacity text-left">
+                        <button onclick="editHabit('${habit.id}')" class="text-slate-500 hover:text-indigo-400 p-1 transition-all text-left text-left btn-press"><i class="ph ph-pencil-simple text-left"></i></button>
+                        <button onclick="deleteHabitGlobal('${habit.id}')" class="text-slate-500 hover:text-rose-400 p-1 transition-all text-left text-left btn-press"><i class="ph ph-trash text-left"></i></button>
                     </div>`;
                 els.habitList.appendChild(div);
             });
