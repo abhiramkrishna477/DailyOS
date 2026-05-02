@@ -810,9 +810,78 @@
                 }
                 renderDashboard(); renderTransactions();
             });
+
+            // PDF Generation
+            document.getElementById('export-diary-btn').addEventListener('click', function() {
+                const year = state.viewDate.getFullYear(); const month = String(state.viewDate.getMonth() + 1).padStart(2, '0');
+                const monthEntries = [];
+                Object.keys(state.days).forEach(dateStr => {
+                    if (dateStr.startsWith(`${year}-${month}`) && state.days[dateStr].diary && state.days[dateStr].diary.length > 0) {
+                        monthEntries.push({ date: dateStr, points: state.days[dateStr].diary });
+                    }
+                });
+                if (monthEntries.length === 0) { this.innerHTML = `<i class="ph ph-warning-circle"></i> Empty`; setTimeout(() => this.innerHTML = `<i class="ph ph-file-pdf"></i> PDF Report`, 2000); return; }
+                this.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Wait...`;
+                monthEntries.sort((a, b) => a.date.localeCompare(b.date));
+                const container = document.createElement('div');
+                container.style.padding = '30px'; container.style.fontFamily = 'Inter, sans-serif'; container.style.backgroundColor = '#050810'; container.style.color = '#e2e8f0';
+                container.innerHTML = `<h1 style="font-size: 24px; color: #f8fafc; margin-bottom: 8px;">Monthly Report</h1><p style="font-size: 14px; color: #94a3b8; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #1e293b;">Entries for ${year}-${month}</p>`;
+                monthEntries.forEach(entry => {
+                    const dateObj = new Date(entry.date);
+                    const dateDisplay = `${entry.date} (${dateObj.toLocaleDateString('en-US', { weekday: 'long' })})`;
+                    let pointsHtml = entry.points.map(p => `<li style="margin-bottom: 16px; list-style: none;"><div style="display: flex; gap: 8px;"><span style="color: #f59e0b; font-size: 18px;">•</span><div><strong style="color: #fdf6e3; font-size: 15px;">${p.title}</strong>${p.details ? `<div style="margin-top: 6px; color: #94a3b8; font-size: 13px; white-space: pre-wrap; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; border-left: 2px solid #fbbf24;">${p.details}</div>` : ''}</div></div></li>`).join('');
+                    container.innerHTML += `<div style="margin-bottom: 24px; background: rgba(15, 23, 42, 0.7); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);"><h3 style="font-size: 14px; font-weight: bold; color: #fbbf24; margin-bottom: 16px; margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid rgba(251,191,36,0.2);">${dateDisplay}</h3><ul style="padding-left: 0; margin: 0;">${pointsHtml}</ul></div>`;
+                });
+                html2pdf().set({ margin: 0.5, filename: `Monthly_Report_${year}-${month}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(container).save().then(() => {
+                    this.innerHTML = `<i class="ph ph-check-circle"></i> Done!`; setTimeout(() => this.innerHTML = `<i class="ph ph-file-pdf"></i> PDF Report`, 2000);
+                });
+            });
         }
 
-        // Helpers
+        function openMonthlyReport() {
+            const year = state.viewDate.getFullYear(); const month = String(state.viewDate.getMonth() + 1).padStart(2, '0');
+            const monthPrefix = `${year}-${month}`;
+            document.getElementById('modal-month-title').textContent = `${new Date(year, state.viewDate.getMonth()).toLocaleString('en-US', { month: 'long' })} ${year}`;
+            let tInc = 0, tExp = 0; let incCats = {}, expCats = {};
+            const daysInMonth = new Date(year, state.viewDate.getMonth() + 1, 0).getDate();
+            const incData = new Array(daysInMonth).fill(0), expData = new Array(daysInMonth).fill(0);
+
+            Object.keys(state.days).forEach(date => {
+                if (date.startsWith(monthPrefix)) {
+                    const dayNum = parseInt(date.split('-')[2]);
+                    state.days[date].transactions.forEach(t => {
+                        const cat = t.category || 'Other';
+                        const amt = Number(t.amount);
+                        if (t.trans_type === 'income') { tInc += amt; incData[dayNum - 1] += amt; incCats[cat] = (incCats[cat] || 0) + amt; }
+                        else { tExp += amt; expData[dayNum - 1] += amt; expCats[cat] = (expCats[cat] || 0) + amt; }
+                    });
+                }
+            });
+
+            document.getElementById('modal-income').textContent = `₹${tInc.toLocaleString()}`;
+            document.getElementById('modal-expense').textContent = `₹${tExp.toLocaleString()}`;
+            document.getElementById('modal-net').textContent = `₹${(tInc - tExp).toLocaleString()}`;
+            document.getElementById('monthly-modal').classList.remove('hidden');
+
+            const ctx = document.getElementById('flow-chart').getContext('2d');
+            if (flowChartInstance) flowChartInstance.destroy();
+            flowChartInstance = new Chart(ctx, { type: 'bar', data: { labels: Array.from({length: daysInMonth}, (_, i) => i + 1), datasets: [{ label: 'Income', data: incData, backgroundColor: '#10b981', borderRadius: 2 }, { label: 'Expense', data: expData, backgroundColor: '#f43f5e', borderRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { boxWidth: 10, color: '#94a3b8' } } }, scales: { x: { grid: { display: false }, ticks: { color: '#94a3b8' } }, y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } } } } });
+
+            const sortList = (elId, cats, total, color) => {
+                const el = document.getElementById(elId); el.innerHTML = '';
+                Object.entries(cats).sort((a, b) => b[1] - a[1]).forEach(([cat, amt]) => {
+                    const p = total > 0 ? ((amt / total) * 100).toFixed(1) : 0;
+                    const badgeClass = color === '#10b981' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20';
+                    el.innerHTML += `<div><div class="flex justify-between items-center mb-1"><span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${badgeClass}">${cat}</span><span class="text-xs font-bold text-white">₹${amt.toLocaleString()}</span></div><div class="w-full bg-black/40 rounded-full h-1.5"><div class="h-full rounded-full" style="width: ${p}%; background: ${color}"></div></div></div>`;
+                });
+            };
+            sortList('income-category-list', incCats, tInc, '#10b981');
+            sortList('expense-category-list', expCats, tExp, '#f43f5e');
+        }
+
+        function closeMonthlyReport() { document.getElementById('monthly-modal').classList.add('hidden'); }
+
+        // UI HELPERS
         function getTasksForDate(target) {
             let list = [];
             Object.keys(state.days).forEach(d => { if(d < target) state.days[d].tasks.forEach(t => { if(!t.is_completed) list.push({...t, originalDate: d}); }); });
