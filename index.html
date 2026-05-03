@@ -9,6 +9,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Added SortableJS for drag and drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -46,6 +48,11 @@
         .btn-press:active {
             transform: scale(0.97);
         }
+
+        /* Sortable drag styles */
+        .drag-handle { cursor: grab; }
+        .drag-handle:active { cursor: grabbing; }
+        .sortable-ghost { opacity: 0.4; background-color: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.4); }
     </style>
 </head>
 <body class="h-screen overflow-hidden p-2 md:p-3 flex flex-col gap-3 relative text-left">
@@ -239,7 +246,7 @@
     <!-- Modals -->
     <div id="goal-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="glass-panel rounded-2xl shadow-2xl w-full max-w-sm flex flex-col modal-enter">
-            <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center shrink-0 bg-black/20 text-left text-left text-left">
+            <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center shrink-0 bg-black/20 text-left">
                 <h2 class="text-sm font-bold text-white flex items-center gap-2"><i class="ph-fill ph-target text-indigo-500 text-left"></i> Set Daily Goal</h2>
                 <button onclick="closeGoalModal()" class="text-slate-400 hover:text-white transition p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-left"><i class="ph ph-x"></i></button>
             </div>
@@ -268,6 +275,7 @@
         </div>
     </div>
 
+    <!-- Monthly Report Modal -->
     <div id="monthly-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="glass-panel rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden modal-enter flex flex-col text-left">
             <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center shrink-0 bg-black/20">
@@ -435,7 +443,10 @@
             ]);
 
             state.habits = habitsRes.data || [];
-            state.tags = { income: ['Project', 'Freelance', 'Salary', 'Investment', 'Gift', 'Other'], expense: ['Food', 'Transport', 'Software', 'Shopping', 'Bills', 'Personal', 'Other'] };
+            state.tags = { 
+                income: ['Project', 'Freelance', 'Salary', 'Investment', 'Gift', 'Other'], 
+                expense: ['Food', 'Transport', 'Software', 'Shopping', 'Bills', 'Personal', 'Other'] 
+            };
             (tagsRes.data || []).forEach(t => {
                 if (state.tags[t.tag_type] && !state.tags[t.tag_type].includes(t.name)) {
                     state.tags[t.tag_type].push(t.name);
@@ -548,8 +559,11 @@
             tasks.forEach(task => {
                 const div = document.createElement('div');
                 div.className = `group flex items-center justify-between p-2.5 rounded-xl border ${task.is_completed ? 'bg-white/5 border-transparent text-left' : 'bg-black/20 border-white/5 text-left'} transition relative`;
+                div.dataset.id = task.id;
+                div.dataset.date = task.originalDate;
                 div.innerHTML = `
                     <div class="flex items-center gap-3 min-w-0 flex-1 text-left">
+                        <i class="ph ph-dots-six-vertical text-slate-500 hover:text-slate-300 transition drag-handle shrink-0 text-lg"></i>
                         <input type="checkbox" ${task.is_completed ? 'checked' : ''} onchange="toggleTask('${task.id}', '${task.originalDate}')" class="w-4 h-4 shrink-0 text-indigo-500 bg-black/50 border-white/20 rounded cursor-pointer text-left">
                         <span class="text-xs font-medium min-w-0 break-words ${task.is_completed ? 'text-slate-600 line-through text-left opacity-50' : 'text-slate-200 text-left'} transition-all">${task.text}</span>
                         ${(task.originalDate < state.currentDate && !task.is_completed) ? `<span class="text-[9px] shrink-0 text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20 ml-2 text-left">Carried</span>` : ''}
@@ -561,6 +575,27 @@
                     </div>`;
                 els.taskList.appendChild(div);
             });
+
+            if (tasks.length > 0) {
+                Sortable.create(els.taskList, {
+                    handle: '.drag-handle',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function (evt) {
+                        const taskArray = getTasksForDate(state.currentDate);
+                        const [movedTask] = taskArray.splice(evt.oldIndex, 1);
+                        taskArray.splice(evt.newIndex, 0, movedTask);
+                        
+                        taskArray.forEach((t, index) => {
+                            t.sort_order = index;
+                            const dayTask = state.days[t.originalDate].tasks.find(dt => dt.id === t.id);
+                            if (dayTask) dayTask.sort_order = index;
+                            
+                            supabaseClient.from('dailyos_tasks').update({ sort_order: index }).eq('id', t.id).then();
+                        });
+                    }
+                });
+            }
         }
 
         async function toggleTask(id, originalDate) {
@@ -770,9 +805,9 @@
             document.getElementById('strip-next').addEventListener('click', () => { state.viewDate.setMonth(state.viewDate.getMonth() + 1); renderCalendarStrip(); });
             document.getElementById('goal-modal-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') saveGoal(); });
             if (els.habitViewSelect) els.habitViewSelect.addEventListener('change', renderHabitChart);
-            if (els.sortIncomeSelect) els.sortIncomeSelect.addEventListener('change', (e) => { state.reportSort.income = e.target.value; });
-            if (els.sortExpenseSelect) els.sortExpenseSelect.addEventListener('change', (e) => { state.reportSort.expense = e.target.value; });
-
+            if (els.sortIncomeSelect) els.sortIncomeSelect.addEventListener('change', (e) => { state.reportSort.income = e.target.value; renderReportLists(); });
+            if (els.sortExpenseSelect) els.sortExpenseSelect.addEventListener('change', (e) => { state.reportSort.expense = e.target.value; renderReportLists(); });
+            
             els.btnIncome.addEventListener('click', () => setTransactionType('income'));
             els.btnExpense.addEventListener('click', () => setTransactionType('expense'));
 
@@ -796,8 +831,19 @@
                     if (task) { task.text = text; task.linked_income = income; }
                     cancelEdit('task');
                 } else {
-                    const { data } = await supabaseClient.from('dailyos_tasks').insert({ user_id: currentUser.id, task_date: state.currentDate, text, linked_income: income }).select();
-                    if(data) getDayData().tasks.push(data[0]); els.taskInput.value = ''; els.taskIncomeInput.value = '';
+                    const currentTasks = getTasksForDate(state.currentDate);
+                    const newOrder = currentTasks.length;
+                    
+                    const { data } = await supabaseClient.from('dailyos_tasks').insert({ 
+                        user_id: currentUser.id, 
+                        task_date: state.currentDate, 
+                        text, 
+                        linked_income: income,
+                        sort_order: newOrder
+                    }).select();
+                    
+                    if(data) getDayData().tasks.push(data[0]); 
+                    els.taskInput.value = ''; els.taskIncomeInput.value = '';
                 }
                 renderTasks();
             });
@@ -814,32 +860,6 @@
                     if(data) getDayData().transactions.push(data[0]); els.transSource.value = ''; els.transAmount.value = '';
                 }
                 renderDashboard(); renderTransactions();
-            });
-
-            // PDF Generation
-            document.getElementById('export-diary-btn').addEventListener('click', function() {
-                const year = state.viewDate.getFullYear(); const month = String(state.viewDate.getMonth() + 1).padStart(2, '0');
-                const monthEntries = [];
-                Object.keys(state.days).forEach(dateStr => {
-                    if (dateStr.startsWith(`${year}-${month}`) && state.days[dateStr].diary && state.days[dateStr].diary.length > 0) {
-                        monthEntries.push({ date: dateStr, points: state.days[dateStr].diary });
-                    }
-                });
-                if (monthEntries.length === 0) { this.innerHTML = `<i class="ph ph-warning-circle"></i> Empty`; setTimeout(() => this.innerHTML = `<i class="ph ph-file-pdf"></i> PDF Report`, 2000); return; }
-                this.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Wait...`;
-                monthEntries.sort((a, b) => a.date.localeCompare(b.date));
-                const container = document.createElement('div');
-                container.style.padding = '30px'; container.style.fontFamily = 'Inter, sans-serif'; container.style.backgroundColor = '#050810'; container.style.color = '#e2e8f0';
-                container.innerHTML = `<h1 style="font-size: 24px; color: #f8fafc; margin-bottom: 8px;">Monthly Report</h1><p style="font-size: 14px; color: #94a3b8; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #1e293b;">Entries for ${year}-${month}</p>`;
-                monthEntries.forEach(entry => {
-                    const dateObj = new Date(entry.date);
-                    const dateDisplay = `${entry.date} (${dateObj.toLocaleDateString('en-US', { weekday: 'long' })})`;
-                    let pointsHtml = entry.points.map(p => `<li style="margin-bottom: 16px; list-style: none;"><div style="display: flex; gap: 8px;"><span style="color: #f59e0b; font-size: 18px;">•</span><div><strong style="color: #fdf6e3; font-size: 15px;">${p.title}</strong>${p.details ? `<div style="margin-top: 6px; color: #94a3b8; font-size: 13px; white-space: pre-wrap; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; border-left: 2px solid #fbbf24;">${p.details}</div>` : ''}</div></div></li>`).join('');
-                    container.innerHTML += `<div style="margin-bottom: 24px; background: rgba(15, 23, 42, 0.7); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);"><h3 style="font-size: 14px; font-weight: bold; color: #fbbf24; margin-bottom: 16px; margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid rgba(251,191,36,0.2);">${dateDisplay}</h3><ul style="padding-left: 0; margin: 0;">${pointsHtml}</ul></div>`;
-                });
-                html2pdf().set({ margin: 0.5, filename: `Monthly_Report_${year}-${month}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(container).save().then(() => {
-                    this.innerHTML = `<i class="ph ph-check-circle"></i> Done!`; setTimeout(() => this.innerHTML = `<i class="ph ph-file-pdf"></i> PDF Report`, 2000);
-                });
             });
         }
 
@@ -880,17 +900,67 @@
                     el.innerHTML += `<div><div class="flex justify-between items-center mb-1"><span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${badgeClass}">${cat}</span><span class="text-xs font-bold text-white">₹${amt.toLocaleString()}</span></div><div class="w-full bg-black/40 rounded-full h-1.5"><div class="h-full rounded-full" style="width: ${p}%; background: ${color}"></div></div></div>`;
                 });
             };
+            
+            state.currentReportData = { incCats, expCats, tInc, tExp };
+            
             sortList('income-category-list', incCats, tInc, '#10b981');
             sortList('expense-category-list', expCats, tExp, '#f43f5e');
         }
 
+        function renderReportLists() {
+            if(!state.currentReportData) return;
+            const { incCats, expCats, tInc, tExp } = state.currentReportData;
+            
+            const getSorted = (cats, type) => {
+                const sortType = state.reportSort[type];
+                return Object.entries(cats).sort((a, b) => {
+                    if (sortType === 'highest') return b[1] - a[1];
+                    if (sortType === 'lowest') return a[1] - b[1];
+                    if (sortType === 'alpha') return a[0].localeCompare(b[0]);
+                    return 0;
+                });
+            };
+
+            const sortList = (elId, sortedEntries, total, color) => {
+                const el = document.getElementById(elId); el.innerHTML = '';
+                sortedEntries.forEach(([cat, amt]) => {
+                    const p = total > 0 ? ((amt / total) * 100).toFixed(1) : 0;
+                    const badgeClass = color === '#10b981' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20';
+                    el.innerHTML += `<div><div class="flex justify-between items-center mb-1"><span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${badgeClass}">${cat}</span><span class="text-xs font-bold text-white">₹${amt.toLocaleString()}</span></div><div class="w-full bg-black/40 rounded-full h-1.5"><div class="h-full rounded-full" style="width: ${p}%; background: ${color}"></div></div></div>`;
+                });
+            };
+
+            sortList('income-category-list', getSorted(incCats, 'income'), tInc, '#10b981');
+            sortList('expense-category-list', getSorted(expCats, 'expense'), tExp, '#f43f5e');
+        }
+
         function closeMonthlyReport() { document.getElementById('monthly-modal').classList.add('hidden'); }
+
+        document.getElementById('export-diary-btn').addEventListener('click', function() {
+            const year = state.viewDate.getFullYear(), month = String(state.viewDate.getMonth() + 1).padStart(2, '0');
+            const entries = [];
+            Object.keys(state.days).forEach(date => { if (date.startsWith(`${year}-${month}`) && state.days[date].diary.length) entries.push({ date, points: state.days[date].diary }); });
+            if (!entries.length) { this.innerHTML = `<i class="ph ph-warning-circle"></i> Empty`; setTimeout(() => this.innerHTML = `<i class="ph ph-file-pdf"></i> PDF Report`, 2000); return; }
+            entries.sort((a, b) => a.date.localeCompare(b.date));
+            const container = document.createElement('div');
+            container.style.padding = '30px'; container.style.fontFamily = 'Inter, sans-serif'; container.style.backgroundColor = '#050810'; container.style.color = '#e2e8f0';
+            container.innerHTML = `<h1 style="font-size: 24px; color: #f8fafc; margin-bottom: 8px;">Monthly Report</h1><p style="font-size: 14px; color: #94a3b8; margin-bottom: 30px; border-bottom: 1px solid #1e293b;">Entries for ${year}-${month}</p>`;
+            entries.forEach(e => {
+                const d = new Date(e.date);
+                let points = e.points.map(p => `<li style="margin-bottom: 16px; list-style: none;"><div style="display: flex; gap: 8px;"><span style="color: #f59e0b; font-size: 18px;">•</span><div><strong style="color: #fdf6e3; font-size: 15px;">${p.title}</strong>${p.details ? `<div style="margin-top: 6px; color: #94a3b8; font-size: 13px; white-space: pre-wrap; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px;">${p.details}</div>` : ''}</div></div></li>`).join('');
+                container.innerHTML += `<div style="margin-bottom: 24px; background: rgba(15, 23, 42, 0.7); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);"><h3 style="font-size: 14px; font-weight: bold; color: #fbbf24; margin-bottom: 16px;">${e.date} (${d.toLocaleDateString('en-US',{weekday:'long'})})</h3><ul style="padding: 0; margin: 0;">${points}</ul></div>`;
+            });
+            html2pdf().set({ margin: 0.5, filename: `Monthly_Report_${year}-${month}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(container).save();
+        });
 
         // UI HELPERS
         function getTasksForDate(target) {
             let list = [];
             Object.keys(state.days).forEach(d => { if(d < target) state.days[d].tasks.forEach(t => { if(!t.is_completed) list.push({...t, originalDate: d}); }); });
             if(state.days[target]) state.days[target].tasks.forEach(t => list.push({...t, originalDate: target}));
+            
+            // Sort by saved drag-and-drop order
+            list.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
             return list;
         }
         function openDiaryModal(id = null) { editingDiaryId = id; document.getElementById('diary-modal-date').textContent = state.currentDate; const entry = getDayData().diary.find(d => d.id === id); document.getElementById('diary-modal-title').value = entry?.title || ''; document.getElementById('diary-modal-details').value = entry?.details || ''; document.getElementById('diary-modal').classList.remove('hidden'); }
