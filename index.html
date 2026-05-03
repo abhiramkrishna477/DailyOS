@@ -770,6 +770,11 @@
             document.getElementById('strip-next').addEventListener('click', () => { state.viewDate.setMonth(state.viewDate.getMonth() + 1); renderCalendarStrip(); });
             document.getElementById('goal-modal-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') saveGoal(); });
             if (els.habitViewSelect) els.habitViewSelect.addEventListener('change', renderHabitChart);
+            if (els.sortIncomeSelect) els.sortIncomeSelect.addEventListener('change', (e) => { state.reportSort.income = e.target.value; });
+            if (els.sortExpenseSelect) els.sortExpenseSelect.addEventListener('change', (e) => { state.reportSort.expense = e.target.value; });
+
+            els.btnIncome.addEventListener('click', () => setTransactionType('income'));
+            els.btnExpense.addEventListener('click', () => setTransactionType('expense'));
 
             els.habitForm.addEventListener('submit', async (e) => {
                 e.preventDefault(); const text = els.habitInput.value.trim();
