@@ -57,6 +57,21 @@
 </head>
 <body class="h-screen overflow-hidden p-2 md:p-3 flex flex-col gap-3 relative text-left">
 
+    <!-- Lock Screen Overlay -->
+    <div id="lock-screen" class="fixed inset-0 bg-[#050810] z-[200] flex flex-col items-center justify-center p-4 transition-opacity duration-500 hidden">
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-sm flex flex-col gap-4 text-center modal-enter">
+            <h2 class="text-2xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+                <i class="ph-fill ph-lock-key text-indigo-500"></i> System Locked
+            </h2>
+            <p class="text-xs text-slate-400 mb-4">Enter passcode to access Daily OS.</p>
+            
+            <input type="password" id="system-password" placeholder="Passcode" class="bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-center text-xl tracking-[0.5em] text-white focus:outline-none focus:border-indigo-500 w-full transition" autocomplete="off">
+            
+            <button onclick="unlockSystem()" id="btn-unlock" class="w-full bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/50 btn-press">Unlock Cockpit</button>
+            <p id="lock-message" class="text-[11px] font-medium text-rose-400 mt-1 h-4"></p>
+        </div>
+    </div>
+
     <!-- Loading Overlay -->
     <div id="loading-screen" class="fixed inset-0 bg-[#050810] z-[100] flex flex-col items-center justify-center p-4 transition-opacity duration-500">
         <div class="flex flex-col items-center gap-4 text-center">
@@ -406,12 +421,45 @@
             els.dbStatusLight = document.getElementById('db-status-light');
             els.sortIncomeSelect = document.getElementById('sort-income-select');
             els.sortExpenseSelect = document.getElementById('sort-expense-select');
+            
+            // New Lock Screen Elements
+            els.lockScreen = document.getElementById('lock-screen');
+            els.sysPassword = document.getElementById('system-password');
+            els.lockMessage = document.getElementById('lock-message');
         };
 
         async function init() {
             getEls();
             setupEventListeners();
             
+            // Check if already unlocked in this browser session
+            if (sessionStorage.getItem('cockpit_unlocked') !== 'true') {
+                els.loadingScreen.classList.add('hidden');
+                els.lockScreen.classList.remove('hidden');
+                setTimeout(() => els.sysPassword.focus(), 100);
+            } else {
+                startApp();
+            }
+        }
+
+        function unlockSystem() {
+            if (els.sysPassword.value === '000') {
+                sessionStorage.setItem('cockpit_unlocked', 'true');
+                els.lockScreen.classList.add('opacity-0');
+                setTimeout(() => {
+                    els.lockScreen.classList.add('hidden');
+                    els.loadingScreen.classList.remove('hidden');
+                    startApp();
+                }, 500);
+            } else {
+                els.lockMessage.textContent = 'Access Denied';
+                els.sysPassword.value = '';
+                els.sysPassword.focus();
+                setTimeout(() => els.lockMessage.textContent = '', 2000);
+            }
+        }
+
+        async function startApp() {
             try {
                 await fetchAllUserData();
                 if (els.dbStatusLight) {
@@ -804,6 +852,11 @@
             document.getElementById('strip-prev').addEventListener('click', () => { state.viewDate.setMonth(state.viewDate.getMonth() - 1); renderCalendarStrip(); });
             document.getElementById('strip-next').addEventListener('click', () => { state.viewDate.setMonth(state.viewDate.getMonth() + 1); renderCalendarStrip(); });
             document.getElementById('goal-modal-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') saveGoal(); });
+            
+            if (els.sysPassword) {
+                els.sysPassword.addEventListener('keypress', (e) => { if(e.key === 'Enter') unlockSystem(); });
+            }
+
             if (els.habitViewSelect) els.habitViewSelect.addEventListener('change', renderHabitChart);
             if (els.sortIncomeSelect) els.sortIncomeSelect.addEventListener('change', (e) => { state.reportSort.income = e.target.value; renderReportLists(); });
             if (els.sortExpenseSelect) els.sortExpenseSelect.addEventListener('change', (e) => { state.reportSort.expense = e.target.value; renderReportLists(); });
