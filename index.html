@@ -493,7 +493,7 @@
             state.habits = habitsRes.data || [];
             state.tags = { 
                 income: ['Project', 'Freelance', 'Salary', 'Investment', 'Gift', 'Other'], 
-                expense: ['Food', 'Transport', 'Software', 'Shopping', 'Bills', 'Personal', 'Other'] 
+                expense: ['Food', 'Transport', 'Software', 'Shopping', 'Bills', 'Personal', 'Other', 'Daily'] 
             };
             (tagsRes.data || []).forEach(t => {
                 if (state.tags[t.tag_type] && !state.tags[t.tag_type].includes(t.name)) {
